@@ -89,9 +89,9 @@ The following installs on same base software on all the nodes (master, private a
 $ sudo bash cluster_cmd_azure.sh 1 5 1 'sudo yum install -y ipset unzip libtool-ltdl libseccomp policycoreutils-python'
 </pre>
 
-## Move Apps to Agents
+## Move Apps 
 
-To install without a local docker repo; move the exported docker apps to each agent.  
+The Azure Servers had a small root partition. It was necessary to move these to a larger partition created by default on these Azure servers mounted at /mtn/resource/azureuser.
 
 <pre>
 $ sudo mkdir /mnt/resource/azureuser
