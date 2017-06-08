@@ -191,15 +191,26 @@ Return to boot server
 
 Using cluster_cmd_azure.sh 
 
+<pre>
 $ sudo bash cluster_cmd_azure.sh 0 5 1 'sudo mkdir -p /etc/docker/certs.d/master.mesos:5000; sudo curl -o /etc/docker/certs.d/master.mesos:5000/ca.crt http://master.mesos:8082/certs/domain.crt; sudo systemctl restart docker'
+</pre>
 
+## Preload Docker Images on Agents
 
-docker ps
-docker stop {Name of nginx App}
+The following are instructions on how I deployed the docker images on the agents.
 
-sudo docker run -d -p 80:80 -v /mnt/resource/azureuser/:/usr/share/nginx/html:ro nginx
+<pre>
+# docker ps
+# docker stop {Name of nginx App used by dcos installer}
 
+# sudo docker run -d -p 80:80 -v /mnt/resource/azureuser/:/usr/share/nginx/html:ro nginx
 
+</pre>
+
+Created script to import the installer
+
+<pre>
+# vi /mnt/resource/azureuser/load_images.sh
 #!/bin/bash
 
 mkdir /mnt/resource/azureuser
@@ -225,27 +236,30 @@ docker load -i service.tar.gz
 docker load -i sit.tar.gz
 docker load -i taskmanager.tar.gz
 docker load -i proxy.tar.gz
+:wq
+</pre>
 
+On each agent
 
-
+<pre>
 curl -O boot/load_images.sh
 sudo bash load_images.sh 
+</pre>
 
 Using cluster_cmd_azure.sh
 
+<pre>
 sudo bash cluster_cmd_azure.sh 0 5 0 'curl -O boot/load_images.sh;sudo bash load_images.sh'
+</pre>
 
 This took several minutes
 
+## Run Application Installer
+
+<pre>
 $ scp -i azureuser install_trinity_disconnected.sh m1:.
 $ scp -i azureuser dcos m1:.
 $ ssh -i azureuser m1
 
 $ sudo bash install_trinity_disconnected.sh
-
-
-
-
-
-
-
+</pre>
