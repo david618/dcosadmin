@@ -22,6 +22,8 @@ The testing outlined in below were done on Azure.
 
 The specfic command lines provided are intended as a guide; they will need to be tweaked for specific installation and testing.
 
+**NOTE**: Used [cluster_cmd_azure.sh](../../scripts/cluster_cmd_azure.sh) to facilitate running commands on all the agents.
+
 Moved the private key, installation scripts, and admin scripts to boot server. 
 <pre>
 scp -i azureuser azureuser azureuser@djofflineboot:.
