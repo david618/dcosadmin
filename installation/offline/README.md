@@ -1,4 +1,4 @@
-# offline
+# Disconnected Installation of DCOS
 
 These instructions cover the installation of DCOS 1.9 EE on servers not connected to the Internet.  They follow the instructions for [Advanced](https://docs.mesosphere.com/1.9/installing/custom/advanced/) installation of DC/OS.
 
