@@ -109,7 +109,7 @@ After these changes the nodes should be able to access services from each other;
 
 ## Run DCOS Installation Script
 
-Modified install_dcos_disconnected.sh as needed setting parameters at top of script.
+Modified [install_dcos_disconnected.sh](install_dcos_disconnected.sh) as needed setting parameters at top of script.
 
 <pre>
 $ sudo bash install_dcos_disconnected.sh
@@ -204,7 +204,6 @@ The following are instructions on how I deployed the docker images on the agents
 # docker stop {Name of nginx App used by dcos installer}
 
 # sudo docker run -d -p 80:80 -v /mnt/resource/azureuser/:/usr/share/nginx/html:ro nginx
-
 </pre>
 
 Created script to import the installer
@@ -255,6 +254,8 @@ sudo bash cluster_cmd_azure.sh 0 5 0 'curl -O boot/load_images.sh;sudo bash load
 This took several minutes
 
 ## Run Application Installer
+
+Edited the [install_trinity_disconnected.sh](install_trinity_disconnected.sh) and set parameters at the top of script as needed.
 
 <pre>
 $ scp -i azureuser install_trinity_disconnected.sh m1:.
