@@ -35,6 +35,15 @@ ssh -i azureuser azureuser@djofflineboot
 
 ## Created local-universe
 
+To build on centos install pre-reqs
+
+<pre>
+sudo yum -y install epel-release
+sudo yum -y install git maven
+sudo yum -y install docker
+sudo yum -y install python34
+</pre>
+
 For offline installation of DCOS if you need access to packages in Universe you need to create a [Local Universe](https://dcos.io/docs/1.9/administering-clusters/deploying-a-local-dcos-universe/) 
 
 Followed instructions under "Installing a selected set of Universe package" 
