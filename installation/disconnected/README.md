@@ -45,7 +45,7 @@ These are packages we need
 --include="marathon-lb,beta-kafka,beta-elastic,dcos-enterprise-cli"
 </pre>
 
-**NOTE:** Use command "sudo make DCOS_VERSION=1.9 local-universe.  The DCOS_VERSION is required!
+**NOTE:** To build local-universe use command "**sudo make DCOS_VERSION=1.9 local-universe**".  The DCOS_VERSION is required!
 
 As of Trinity TAG:  0.9.3.216
 - beta-elastic: 1.0.13-5.4.1-beta
