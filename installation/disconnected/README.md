@@ -120,7 +120,7 @@ $ mv analysis.tar.gz map.tar.gz monitoring.tar.gz proxy.tar.gz receiver.tar.gz s
 
 ## Configure for Off Line Testing
 Modified NSG for agent, public agent, master; Outbound security rules
-- allow-172-17;Priority 100; Destination CIDR ; Port Range *; Action Allow
+- allow-172-17;Priority 100; Destination CIDR 172.17.0.0/16; Port Range *; Action Allow
 - deny-all;Priority 110; Destination Any; Port Range *; Action Deny
 
 After these changes the nodes should be able to access services from each other; however, they cannot access the www
