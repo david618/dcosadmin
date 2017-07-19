@@ -42,12 +42,19 @@ Followed instructions under "Installing a selected set of Universe package"
 These are packages we need
 
 <pre>
---include="marathon-lb,beta-kafka,elastic,dcos-enterprise-cli"
+--include="marathon-lb,beta-kafka,beta-elastic,dcos-enterprise-cli"
 </pre>
 
-Our application uses a older version of beta-kafka. To support this you'll need to remove newer versions of the package.
+**NOTE:** Use command "sudo make DCOS_VERSION=1.9 local-universe.  The DCOS_VERSION is required!
 
-Under repo/packages/B/beta-kafka Remove "2" folder; to include 1.1.22-0.10.1.0-beta 
+As of Trinity TAG:  0.9.3.216
+- beta-elastic: 1.0.13-5.4.1-beta
+- beta-kafka: 1.1.22-0.10.1.0-beta
+
+**NOTE:** If you need an older version of package, you'll need to remove newer versions of the package.
+
+For example if you need beta-kafka 1.1.22-0.10.1.0-beta; remove any folder higher than "1" from repo/packages/B/beta-kafka.
+
 
 ## Move Installers to Boot Server
 
