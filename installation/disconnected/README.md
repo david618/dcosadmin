@@ -30,11 +30,9 @@ The specfic command lines provided are intended as a guide; they will need to be
 
 **NOTE**: Used [cluster_cmd_azure.sh](../../scripts/cluster_cmd_azure.sh) to facilitate running commands on all the agents.
 
-Moved the private key (named "azureuser"), installation scripts, and admin scripts to boot server. 
+Moved the private key (named "azureuser")
 <pre>
 scp -i azureuser azureuser azureuser@djofflineboot:.
-scp -i azureuser install_*_disconnected.sh azureuser@djofflineboot:.
-scp -i azureuser cluster_cmd_azure.sh  azureuser@djofflineboot:.
 ssh -i azureuser azureuser@djofflineboot
 </pre>
 
@@ -45,19 +43,20 @@ ssh -i azureuser azureuser@djofflineboot
 
 These instructions outline how I moved the files from s3 bucket down to the boot server.
 <pre>
-$ sudo su - 
-# yum -y install epel-release
-# yum install -y python2-pip
-# exit
+sudo yum -y install epel-release
+sudo yum install -y python2-pip
 
-$ pip install --upgrade --user awscli
-$ aws configure
+pip install --upgrade --user awscli
+aws configure
 </pre>
 
 Provided ID and Key
 <pre>
 
-$ aws s3 sync s3://djennings . 
+sudo mkdir /mnt/resource/s3
+sudo chown azureuser. /mnt/resource/s3
+cd /mnt/resource/s3
+aws s3 sync s3://djennings . 
 </pre>
 
 The items in s3
