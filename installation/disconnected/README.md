@@ -208,7 +208,7 @@ Return to boot server
 Using cluster_cmd_azure.sh 
 
 <pre>
-$ sudo bash cluster_cmd_azure.sh 0 5 1 'sudo mkdir -p /etc/docker/certs.d/master.mesos:5000; sudo curl -o /etc/docker/certs.d/master.mesos:5000/ca.crt http://master.mesos:8082/certs/domain.crt; sudo systemctl restart docker'
+sudo bash run_cluster_cmd.sh 0 3 1 'sudo mkdir -p /etc/docker/certs.d/master.mesos:5000; sudo curl -o /etc/docker/certs.d/master.mesos:5000/ca.crt http://master.mesos:8082/certs/domain.crt; sudo systemctl restart docker'
 </pre>
 
 ## Preload Docker Images on Agents
