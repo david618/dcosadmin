@@ -28,7 +28,7 @@ The testing outlined in below were done on Azure.
 
 The specfic command lines provided are intended as a guide; they will need to be tweaked for specific installation and testing.
 
-**NOTE**: Used [cluster_cmd_azure.sh](../../scripts/cluster_cmd_azure.sh) to facilitate running commands on all the agents.
+**NOTE**: Used [run_cluster_cmd.sh](../../scripts/run_cluster_cmd.sh) to facilitate running commands on all the agents.
 
 Moved the private key (named "azureuser")
 <pre>
@@ -39,9 +39,12 @@ ssh -i azureuser azureuser@djofflineboot
 
 ## Move Installers to Boot Server
 
-**NOTE** For air-gap systems the files would need to be copied to media and physically copied to the server.
+**NOTE:** For air-gap systems the files would need to be copied to media and physically copied to the server.
 
-These instructions outline how I moved the files from s3 bucket down to the boot server.
+These instructions outline how I moved the files from s3 bucket down to the boot server.  
+
+**NOTE:** I created a folder in /mnt/resources because Azure root folder was very small for my DS3_V2 instance.
+
 <pre>
 sudo yum -y install epel-release
 sudo yum install -y python2-pip
@@ -53,43 +56,39 @@ aws configure
 Provided ID and Key
 <pre>
 
-sudo mkdir /mnt/resource/s3
+sudo mkdir /mnt/resources/s3
 sudo chown azureuser. /mnt/resource/s3
 cd /mnt/resource/s3
 aws s3 sync s3://djennings . 
 </pre>
 
 The items in s3
-- dcos installer
+- dcos/trinity installers 
 - dcos command line tool
 - docker-engine rpm
 - docker images
-  - our applications
+  - Trinity apps
   - local-universe 
   - nginx
+- templates.tgz for Marathon-LB 
+- 
   
 ## Install Packages
 
-These base packages are required and should be available from the base repo
+These base packages are required and should be available from the base repo.
 <pre>
-$ sudo yum install -y ipset unzip libtool-ltdl libseccomp policycoreutils-python 
+sudo yum install -y ipset unzip libtool-ltdl libseccomp policycoreutils-python 
 </pre>
 
-The following installs on same base software on all the nodes (master, private agents, and public agents)
-<pre>
-$ sudo bash cluster_cmd_azure.sh 1 5 1 'sudo yum install -y ipset unzip libtool-ltdl libseccomp policycoreutils-python'
-</pre>
+You can use the run_cluster_cmd.sh (Bash Script) to run installer on all the nodes. I put a copy of the script in my home folder where my private key was also at.
 
-## Move Apps 
+Edit the script and set the username and pkifile.
 
-The Azure Servers had a small root partition. It was necessary to move these to a larger partition created by default on these Azure servers mounted at /mtn/resource/azureuser.
+The following command will do the installs on 1 master (m1), 5 private agents (a1,a2,a3), and 1 public agents (p1). 
 
 <pre>
-$ sudo mkdir /mnt/resource/azureuser
-$ sudo chown azureuser. /mnt/resource/azureuser/
-$ mv analysis.tar.gz map.tar.gz monitoring.tar.gz proxy.tar.gz receiver.tar.gz service.tar.gz sit.tar.gz taskmanager.tar.gz /mnt/resource/azureuser/
+sudo bash run_cluster_cmd.sh 1 3 1 'sudo yum install -y ipset unzip libtool-ltdl libseccomp policycoreutils-python'
 </pre>
-
 
 ## Configure for Off Line Testing
 Modified NSG for agent, public agent, master; Outbound security rules
