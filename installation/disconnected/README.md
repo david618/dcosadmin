@@ -216,62 +216,30 @@ sudo bash run_cluster_cmd.sh 0 3 1 'sudo mkdir -p /etc/docker/certs.d/master.mes
 The following are instructions on how I deployed the docker images on the agents.
 
 <pre>
-# docker ps
-# docker stop {Name of nginx App used by dcos installer}
+sudo docker ps
+sudo docker stop {Name of nginx App used by dcos installer}
 
-# sudo docker run -d -p 80:80 -v /mnt/resource/azureuser/:/usr/share/nginx/html:ro nginx
+mkdir images
+mv realtime* images/
+mv docker-load.sh images/
+mv readme.txt images/
+sudo docker run -d -p 80:80 -v /home/azureuser/images:/usr/share/nginx/html:ro nginx
 </pre>
 
-Created script to import the installer
+Edit images/docker-load.sh as needed.
 
 <pre>
-# vi /mnt/resource/azureuser/load_images.sh
-#!/bin/bash
-
-mkdir /mnt/resource/azureuser
-chown azureuser. /mnt/resource/azureuser
-
-cd /mnt/resource/azureuser
-curl -sO http://boot/analysis.tar.gz
-curl -sO http://boot/map.tar.gz
-curl -sO http://boot/monitoring.tar.gz
-curl -sO http://boot/receiver.tar.gz
-curl -sO http://boot/service.tar.gz
-curl -sO http://boot/sit.tar.gz
-curl -sO http://boot/taskmanager.tar.gz
-curl -sO http://boot/proxy.tar.gz
-
-systemctl stop dcos-docker-gc.timer
-
-docker load -i analysis.tar.gz
-docker load -i map.tar.gz
-docker load -i monitoring.tar.gz
-docker load -i receiver.tar.gz
-docker load -i service.tar.gz
-docker load -i sit.tar.gz
-docker load -i taskmanager.tar.gz
-docker load -i proxy.tar.gz
-:wq
+cd ~
+sudo bash run_cluster_cmd.sh 0 3 1 'curl -O boot/docker-load.sh;sudo bash docker-load.sh'
 </pre>
 
-On each agent
-
-<pre>
-curl -O boot/load_images.sh
-sudo bash load_images.sh 
-</pre>
-
-Using cluster_cmd_azure.sh
-
-<pre>
-sudo bash cluster_cmd_azure.sh 0 5 0 'curl -O boot/load_images.sh;sudo bash load_images.sh'
-</pre>
-
-This took several minutes
+This takes several minutes. With some adjusement the script could be paralized to load images on all servers at same time.
 
 ## Run Application Installer
 
 Edited the [install_trinity_disconnected.sh](install_trinity_disconnected.sh) and set parameters at the top of script as needed.
+
+For some reason; this command needs to be ran from a server within the cluster (e.g. m1). 
 
 <pre>
 $ scp -i azureuser install_trinity_disconnected.sh m1:.
