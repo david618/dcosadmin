@@ -94,7 +94,16 @@ After these changes the nodes should be able to access services from each other;
 
 ## Run DCOS Installation Script
 
-Modified [install_dcos_disconnected.sh](install_dcos_disconnected.sh) as needed setting parameters at top of script.
+Install Pre-reqs on Boot
+
+<pre>
+sudo yum install -y ipset unzip libtool-ltdl libseccomp policycoreutils-python 
+sudo rpm -Uvh docker-engine-selinux-1.13.1-1.el7.centos.noarch.rpm 
+sudo rpm -Uvh docker-engine-1.13.1-1.el7.centos.x86_64.rpm 
+sudo systemctl start docker
+</pre>
+
+Modify [install_dcos_disconnected.sh](install_dcos_disconnected.sh) as needed setting parameters at top of script.
 
 <pre>
 $ sudo bash install_dcos_disconnected.sh
