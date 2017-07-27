@@ -1,7 +1,5 @@
 # Update files in S3
 
-## Update Docker Images For Trinity 
-
 ### Pull Current Images from S3
 
 This is how to pull s3 bucket down to server you want to build images on.  Recommend you use a Cloud computer (Azure/AWS) because moving images up to s3 can be very slow depending on you'r upload speed. 
@@ -23,6 +21,34 @@ $ mkdir s3
 $ cd s3
 $ aws s3 sync s3://djennings . 
 </pre>
+
+## Get Docker Engine RPM
+
+CentOS EPEL includes a version of Docker; however, the version packaged did have some issues.
+
+Download docker-engine from the [docker repo](https://yum.dockerproject.org/repo/main/centos/7/Packages/)
+
+<pre>
+curl -O https://yum.dockerproject.org/repo/main/centos/7/Packages/docker-engine-1.13.1-1.el7.centos.x86_64.rpm
+curl -O https://yum.dockerproject.org/repo/main/centos/7/Packages/docker-engine-selinux-1.13.1-1.el7.centos.noarch.rpm
+</pre>
+
+Copy the rpm's to the s3 folder
+
+## Get nginx Docker Images
+
+The DC/OS installer needs nginx.
+
+<pre>
+sudo docker pull nginx
+sudo docker save -o nginx.tar docker.io/nginx
+sudo chown azureuser. nginx.tar
+gzip nginx.tar 
+</pre>
+
+Copy the nginx.tar.gz to the s3 folder.
+
+## Update Docker Images For Trinity 
 
 ### Pull Docker Images 
  
@@ -165,7 +191,7 @@ To get beta-kafka 1.1.22-0.10.1.0-beta. I had to remove folders 2 and 1 from uni
 
 **Skip Step 5** I'll provide instructions later for that.
 
-Copy the s3 folder
+Copy local-universe.tar.gz to the s3 folder
 
 <pre>
 sudo chown azureuser. local-universe.tar.gz
@@ -173,7 +199,7 @@ cp local-universe.tar.gz ~/djennings/
 </pre>
 
 
-## Update Images on S3 
+## Sync Changes from Local Folder to S3
 
 <pre>
 cd ~/s3
