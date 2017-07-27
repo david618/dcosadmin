@@ -111,6 +111,8 @@ $ sudo bash install_dcos_disconnected.sh
 
 ## Setup Local Universe
 
+Reference these [instructions](https://github.com/mesosphere/universe/tree/version-3.x/docker/local-universe) if something goes wrong.
+
 Move files to m1 (Master Server 1)
 
 <pre>
@@ -124,7 +126,7 @@ $ sudo su -
 
 # vi /etc/systemd/system/dcos-local-universe-http.service
 [Unit]
-Description=DCOS: Serve the (http) local universe
+Description=DCOS: Serve the local universe (HTTP)
 After=docker.service
 
 [Service]
@@ -133,12 +135,18 @@ StartLimitInterval=0
 RestartSec=15
 TimeoutStartSec=120
 TimeoutStopSec=15
+ExecStartPre=-/usr/bin/docker kill %n
+ExecStartPre=-/usr/bin/docker rm %n
 ExecStart=/usr/bin/docker run --rm --name %n -p 8082:80 mesosphere/universe nginx -g "daemon off;"
+
+[Install]
+WantedBy=multi-user.target
 :wq
 
 # vi /etc/systemd/system/dcos-local-universe-registry.service
+
 [Unit]
-Description=DCOS: Serve the (http) local universe
+Description=DCOS: Serve the local universe (Docker registry)
 After=docker.service
 
 [Service]
@@ -147,7 +155,12 @@ StartLimitInterval=0
 RestartSec=15
 TimeoutStartSec=120
 TimeoutStopSec=15
+ExecStartPre=-/usr/bin/docker kill %n
+ExecStartPre=-/usr/bin/docker rm %n
 ExecStart=/usr/bin/docker run --rm --name %n -p 5000:5000 -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key mesosphere/universe registry serve /etc/docker/registry/config.yml
+
+[Install]
+WantedBy=multi-user.target
 :wq
 
 # systemctl daemon-reload
