@@ -112,18 +112,23 @@ $ sudo bash install_dcos_disconnected.sh
 
 Reference these [instructions](https://github.com/mesosphere/universe/tree/version-3.x/docker/local-universe) if something goes wrong.
 
-Move files to m1 (Master Server 1)
+The Local Universe could be setup on any server.  I'm using m1 here because it's available and it works.
+
+Move files to the m1 server.
 
 <pre>
-$ scp -i azureuser local-universe.tar.gz m1:.
-$ ssh -i azureuser m1
 
+scp -i azureuser local-universe.tar.gz m1:.
 
-$ sudo docker load -i local-universe.tar.gz
+ssh -i azureuser m1
+sudo docker load -i local-universe.tar.gz
+sudo su -
 
-$ sudo su -
+vi /etc/systemd/system/dcos-local-universe-http.service
+</pre>
 
-# vi /etc/systemd/system/dcos-local-universe-http.service
+Add these lines
+<pre>
 [Unit]
 Description=DCOS: Serve the local universe (HTTP)
 After=docker.service
@@ -140,10 +145,16 @@ ExecStart=/usr/bin/docker run --rm --name %n -p 8082:80 mesosphere/universe ngin
 
 [Install]
 WantedBy=multi-user.target
-:wq
+</pre>
 
-# vi /etc/systemd/system/dcos-local-universe-registry.service
+Create registry.service
 
+<pre>
+vi /etc/systemd/system/dcos-local-universe-registry.service
+</pre>
+
+Add these line
+<pre>
 [Unit]
 Description=DCOS: Serve the local universe (Docker registry)
 After=docker.service
@@ -160,16 +171,15 @@ ExecStart=/usr/bin/docker run --rm --name %n -p 5000:5000 -e REGISTRY_HTTP_TLS_C
 
 [Install]
 WantedBy=multi-user.target
-:wq
+</pre>
 
-# systemctl daemon-reload
-
-# systemctl start dcos-local-universe-http
-# systemctl start dcos-local-universe-registry
-
-# systemctl enable dcos-local-universe-http
-# systemctl enable dcos-local-universe-registry
-
+Load the service
+<pre>
+systemctl daemon-reload
+systemctl start dcos-local-universe-http
+systemctl start dcos-local-universe-registry
+systemctl enable dcos-local-universe-http
+systemctl enable dcos-local-universe-registry
 </pre>
 
 From Enterprise DCOS WebUI
