@@ -5,21 +5,30 @@
 This is how to pull s3 bucket down to server you want to build images on.  Recommend you use a Cloud computer (Azure/AWS) because moving images up to s3 can be very slow depending on you'r upload speed. 
 
 <pre>
-$ sudo su - 
-# yum -y install epel-release
-# yum install -y python2-pip
-# exit
+sudo yum -y install epel-release
+sudo yum install -y python2-pip
 
-$ pip install --upgrade --user awscli
-$ aws configure
+pip install --upgrade --user awscli
+aws configure
 </pre>
 
 Provided ID and Key
 <pre>
 
-$ mkdir s3
-$ cd s3
-$ aws s3 sync s3://djennings . 
+mkdir s3
+cd s3
+aws s3 sync s3://djennings . 
+</pre>
+
+## Install Some Prereqs
+
+These are required for working with docker images.
+
+<pre>
+sudo yum install -y ipset unzip libtool-ltdl libseccomp policycoreutils-python 
+sudo rpm -Uvh docker-engine-selinux-1.13.1-1.el7.centos.noarch.rpm 
+sudo rpm -Uvh docker-engine-1.13.1-1.el7.centos.x86_64.rpm 
+sudo systemctl start docker
 </pre>
 
 ## Get Docker Engine RPM
