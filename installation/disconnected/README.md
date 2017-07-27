@@ -66,7 +66,6 @@ The items in s3
   - local-universe 
   - nginx
 - templates.tgz for Marathon-LB 
-- 
   
 ## Install Packages
 
