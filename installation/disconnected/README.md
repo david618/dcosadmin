@@ -38,6 +38,55 @@ scp -i azureuser cluster_cmd_azure.sh  azureuser@djofflineboot:.
 ssh -i azureuser azureuser@djofflineboot
 </pre>
 
+## Update Docker Images For Trinity 
+
+### Pull Current Images Down from S3
+
+This is how to pull s3 bucket down to server you want to build images on.  Recommend you use a Cloud computer (Azure/AWS) because moving images up to s3 can be very slow depending on you'r upload speed. 
+
+<pre>
+$ sudo su - 
+# yum -y install epel-release
+# yum install -y python2-pip
+# exit
+
+$ pip install --upgrade --user awscli
+$ aws configure
+</pre>
+
+Provided ID and Key
+<pre>
+
+$ mkdir s3
+$ cd s3
+$ aws s3 sync s3://djennings . 
+</pre>
+
+### Pull Images from Docker for Specific Tag
+ 
+- Docker Pull
+  -- Edit Docker Pull Script (docker-pull.sh) and set the TAG
+  -- Run Script
+  <pre>
+  sudo bash docker-pull.sh
+  </pre>
+  -- You'll be prompted for your Docker username and password (you need permissions to esritrinity)
+  -- Script takes a few minutes to run
+- Docker Save
+  -- Edit Docker Save Script docker-save.sh and set the TAG
+  -- Create a folder and cd to that folder
+  **NOTE:** Azure has some pretty small root drives so I created images folder on /mnt/resources.
+  <pre>
+  sudo mkdir /mnt/resources/images
+  sudo chown azureuser. /mnt/resources/images
+  cd /mnt/resources/images
+  </pre>
+  -- Run Script
+  <pre>
+  sudo bash /home/azureuser/djennings/docker-save.sh
+  </pre>
+  
+  
 
 ## Created local-universe
 
@@ -137,6 +186,8 @@ To get beta-kafka 1.1.22-0.10.1.0-beta. I had to remove folders 2 and 1 from uni
 **STEP 4 NOTE:** To build local-universe use command "**sudo make DCOS_VERSION=1.9 local-universe**".  The DCOS_VERSION is required!
 
 **Skip Step 5** I'll provide instructions later for that.
+
+
 
 ## Move Installers to Boot Server
 
