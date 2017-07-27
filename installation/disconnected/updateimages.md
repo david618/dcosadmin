@@ -108,22 +108,20 @@ To build on centos install pre-reqs
 <pre>
 sudo yum -y install epel-release
 sudo yum -y install git maven
-sudo yum -y install docker
 sudo yum -y install python34
-systemctl start docker
 </pre>
 
 For offline installation of DCOS if you need access to packages in Universe you need to create a [Local Universe](https://dcos.io/docs/1.9/administering-clusters/deploying-a-local-dcos-universe/) 
 
-Followed instructions under "Installing a selected set of Universe package" 
-
-For step 3 these are packages we need.  You can just edit the Makefile or use the sed command.
+Follow these steps
 
 <pre>
-sed -i -e 's/--selected/--include="marathon-lb,beta-kafka,beta-elastic,dcos-enterprise-cli"/' Makefile
+git clone https://github.com/mesosphere/universe.git --branch version-3.x
+cd universe/docker/local-universe/
+sudo make base
 </pre>
 
-or you can just edit the Makefile using vi and set --include as follows.
+Edit Makefile replace --selected with
 
 <pre>
 --include="marathon-lb,beta-kafka,beta-elastic,dcos-enterprise-cli"
@@ -196,15 +194,17 @@ rm -rf 5
 
 To get beta-kafka 1.1.22-0.10.1.0-beta. I had to remove folders 2 and 1 from universe/repo/packages/B/beta-kafka.
 
-**STEP 4 NOTE:** To build local-universe use command "**sudo make DCOS_VERSION=1.9 local-universe**".  The DCOS_VERSION is required!
+Now build the local-universe.
 
-**Skip Step 5** I'll provide instructions later for that.
+<pre>
+sudo make DCOS_VERSION=1.9 local-universe
+</pre>
 
 Copy local-universe.tar.gz to the s3 folder
 
 <pre>
 sudo chown azureuser. local-universe.tar.gz
-cp local-universe.tar.gz ~/djennings/
+cp local-universe.tar.gz ~/s3/
 </pre>
 
 
@@ -212,5 +212,5 @@ cp local-universe.tar.gz ~/djennings/
 
 <pre>
 cd ~/s3
-aws s3 sync . s3://djennings
+aws s3 sync . s3://s3
 </pre>
