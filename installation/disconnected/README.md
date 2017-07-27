@@ -127,17 +127,16 @@ cat 4/package.json
 }
 </pre>
 
-So delete folder 5.
+This is the one we want; so delete folder 5.
 <pre>
 rm -rf 5
 </pre>
 
 To get beta-kafka 1.1.22-0.10.1.0-beta. I had to remove folders 2 and 1 from universe/repo/packages/B/beta-kafka.
 
-
 **STEP 4 NOTE:** To build local-universe use command "**sudo make DCOS_VERSION=1.9 local-universe**".  The DCOS_VERSION is required!
 
-Skip Step 5. I'll provide instructions later for that.
+**Skip Step 5** I'll provide instructions later for that.
 
 ## Move Installers to Boot Server
 
