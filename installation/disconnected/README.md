@@ -1,15 +1,21 @@
 # Disconnected Installation of DCOS
 
-These instructions cover the installation of DCOS 1.9 EE on servers not connected to the Internet.  They follow the instructions for [Advanced](https://docs.mesosphere.com/1.9/installing/custom/advanced/) installation of DC/OS.
+These instructions cover the installation of DCOS 1.9.1 EE on servers not connected to the Internet.  
+
+They follow the instructions for [Advanced](https://docs.mesosphere.com/1.9/installing/custom/advanced/) installation of DC/OS.
 
 ## Create Servers
-- Operation System: CentOS 7.2
+- Operation System: CentOS 7.3
+  -- Azure: CentOS-based 7.3  Publisher Rogue Wave Software (formerly OpenLogic)
+  -- AWS: https://wiki.centos.org/Cloud/AWS
 - Created a "boot" server to support installation
 - Created Master server(s)
 - Created Private agents
 - Created Public agent(s)
 
-The installers assumes the servers can be referred to by short names. In Azure this is accomplished via the template; for AWS you can add entries to /etc/hosts file on the boot server.  
+The installers assumes the servers can be referred to by short names. 
+
+In Azure this is accomplished via the template; for AWS you can add entries to /etc/hosts file on the boot server.  
 - Masters named m1, m2, ...
 - Private Agents named a1, a2, ...
 - Public Agents named p1, p2, ...
@@ -24,11 +30,11 @@ The specfic command lines provided are intended as a guide; they will need to be
 
 **NOTE**: Used [cluster_cmd_azure.sh](../../scripts/cluster_cmd_azure.sh) to facilitate running commands on all the agents.
 
-Moved the private key, installation scripts, and admin scripts to boot server. 
+Moved the private key (named "azureuser"), installation scripts, and admin scripts to boot server. 
 <pre>
 scp -i azureuser azureuser azureuser@djofflineboot:.
 scp -i azureuser install_*_disconnected.sh azureuser@djofflineboot:.
-scp -i azureuser github/esritrinity-holistic/adminscripts/cluster_cmd_azure.sh  azureuser@djofflineboot:.
+scp -i azureuser cluster_cmd_azure.sh  azureuser@djofflineboot:.
 ssh -i azureuser azureuser@djofflineboot
 </pre>
 
