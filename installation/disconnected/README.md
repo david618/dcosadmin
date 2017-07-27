@@ -43,8 +43,6 @@ ssh -i azureuser azureuser@djofflineboot
 
 These instructions outline how I moved the files from s3 bucket down to the boot server.  
 
-**NOTE:** I created a folder in /mnt/resources because Azure root folder was very small for my DS3_V2 instance.
-
 <pre>
 sudo yum -y install epel-release
 sudo yum install -y python2-pip
@@ -56,9 +54,6 @@ aws configure
 Provided ID and Key
 <pre>
 
-sudo mkdir /mnt/resources/s3
-sudo chown azureuser. /mnt/resource/s3
-cd /mnt/resource/s3
 aws s3 sync s3://djennings . 
 </pre>
 
@@ -80,7 +75,7 @@ These base packages are required and should be available from the base repo.
 sudo yum install -y ipset unzip libtool-ltdl libseccomp policycoreutils-python 
 </pre>
 
-You can use the run_cluster_cmd.sh (Bash Script) to run installer on all the nodes. I put a copy of the script in my home folder where my private key was also at.
+You can use the run_cluster_cmd.sh (Bash Script) to run installer on all the nodes. 
 
 Edit the script and set the username and pkifile.
 
