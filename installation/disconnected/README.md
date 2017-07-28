@@ -223,6 +223,7 @@ mkdir images
 mv realtime* images/
 mv docker-load.sh images/
 mv readme.txt images/
+mv templates.tgz images/
 sudo docker run -d -p 80:80 -v /home/azureuser/images:/usr/share/nginx/html:ro nginx
 </pre>
 
