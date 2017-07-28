@@ -242,9 +242,11 @@ Edited the [install_trinity_disconnected.sh](install_trinity_disconnected.sh) an
 For some reason; this command needs to be ran from a server within the cluster (e.g. m1). 
 
 <pre>
-$ scp -i azureuser install_trinity_disconnected.sh m1:.
-$ scp -i azureuser dcos m1:.
-$ ssh -i azureuser m1
 
-$ sudo bash install_trinity_disconnected.sh
+scp -i azureuser install_trinity_disconnected.sh m1:.
+scp -i azureuser dcos m1:.
+ssh -i azureuser m1
+
+sudo yum -y install java-1.8.0-openjdk
+sudo bash install_trinity_disconnected.sh
 </pre>
