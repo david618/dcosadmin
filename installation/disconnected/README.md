@@ -78,7 +78,7 @@ You can use the run_cluster_cmd.sh (Bash Script) to run installer on all the nod
 
 Edit the script and set the username and pkifile.
 
-The following command will do the installs on 1 master (m1), 5 private agents (a1,a2,a3), and 1 public agents (p1). 
+The following command will do the installs on 1 master (m1), 3 private agents (a1,a2,a3), and 1 public agents (p1). 
 
 <pre>
 sudo bash run_cluster_cmd.sh 1 3 1 'sudo yum install -y ipset unzip libtool-ltdl libseccomp policycoreutils-python'
