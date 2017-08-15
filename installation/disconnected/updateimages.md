@@ -148,5 +148,5 @@ cp local-universe.tar.gz ~/s3/
 
 <pre>
 cd ~/s3
-aws s3 sync . s3://s3
+aws s3 sync . s3://djennings --delete
 </pre>
