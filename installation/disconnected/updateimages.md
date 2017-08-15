@@ -31,7 +31,9 @@ sudo rpm -Uvh docker-engine-1.13.1-1.el7.centos.x86_64.rpm
 sudo systemctl start docker
 </pre>
 
-## Get Docker Engine RPM
+## Updates
+
+### Get Latest Docker Engine RPM
 
 CentOS EPEL includes a version of Docker; however, the version packaged did have some issues.
 
@@ -44,7 +46,7 @@ curl -O https://yum.dockerproject.org/repo/main/centos/7/Packages/docker-engine-
 
 Copy the rpm's to the s3 folder
 
-## Get nginx Docker Images
+### Get nginx Docker Images
 
 The DC/OS installer needs nginx.
 
@@ -57,9 +59,9 @@ gzip nginx.tar
 
 Copy the nginx.tar.gz to the s3 folder.
 
-## Update Docker Images For Trinity 
+### Update Docker Images For Trinity 
 
-### Pull Docker Images 
+#### Pull Docker Images 
  
 Pulls the images from Docker down to local machine.
  
@@ -71,7 +73,7 @@ Pulls the images from Docker down to local machine.
 - You'll be prompted for your Docker username and password (you need permissions to esritrinity)
 - Script takes a few minutes to run
 
-### Save Docker Images
+#### Save Docker Images
 
 Saves and Compresses Docker Images.
 
@@ -88,7 +90,7 @@ Saves and Compresses Docker Images.
   sudo bash /home/azureuser/djennings/docker-save.sh
   </pre>
   
-### Copy New Images to s3 Folder
+#### Copy New Images to s3 Folder
 
 - From the s3 folder remove the old images
 <pre>
@@ -101,7 +103,7 @@ sudo cp /mnt/resources/images/realtime-* ~/s3
 chown azureuser. ~/s3/realtime-*
 </pre>
 
-## Created local-universe
+### Created local-universe
 
 To build on centos install pre-reqs
 
@@ -121,83 +123,17 @@ cd universe/docker/local-universe/
 sudo make base
 </pre>
 
-Edit Makefile replace --selected with
+Look up versions of apps you need from DC/OS 
 
-<pre>
---include="marathon-lb,beta-kafka,beta-elastic,dcos-enterprise-cli"
-</pre>
-
-**NOTE:** If you need an older version of package, you'll need to remove newer versions of the package from your local copy.
-
-As of Trinity TAG:  0.9.4.222
-- beta-elastic: 1.0.13-5.4.1-beta
+As of Trinity TAG:  0.9.4.241
+- beta-elastic: 1.0.14-5.5.1-beta
 - beta-kafka: 1.1.22-0.10.1.0-beta
+- marathon-lb: 1.8.0
+- dcos-enterprise-cli: 1.0.8
 
-For example. 
-
+Run make
 <pre>
-cd universe/repo/packages/B/beta-elastic
-ls 
-0  1  2  3  4  5
-</pre>
-
-Look at contents of the package.json for latest.
-<pre>
-cat 5/package.json
-{
-  "description": "Elasticsearch 5, and optionally X-Pack",
-  "framework": true,
-  "maintainer": "support@mesosphere.io",
-  "minDcosReleaseVersion": "1.9",
-  "name": "beta-elastic",
-  "packagingVersion": "3.0",
-  "postInstallNotes": "DC/OS elastic service is being installed!\n\n\tDocumentation: https://docs.mesosphere.com/1.9/usage/service-guides/elastic\n\tIssues: https://docs.mesosphere.com/support/",
-  "postUninstallNotes": "DC/OS elastic service is being uninstalled.",
-  "preInstallNotes": "This DC/OS Service is currently a beta candidate undergoing testing as part of a formal beta test program.\n\nThere may be bugs, incomplete features, incorrect documentation, or other discrepancies.\n\nDefault configuration requires 3 agent nodes each with: CPU: 4.5 | Memory: 11264MB | Disk: 15500MB\n\nMore specifically, each instance type requires:\n\nMaster node: 3 instances | 1.0 CPU | 2048 MB MEM | 1 2000 MB Disk\n\nData node: 2 instances | 1.0 CPU | 4096 MB MEM | 1 10000 MB Disk\n\nIngest node: 1 instance | 0.5 CPU | 2048 MB MEM | 1 2000 MB Disk\n\nCoordinator node: 1 instance | 1.0 CPU | 2048 MB MEM | 1 1000 MB Disk\n\nContact Mesosphere before deploying this beta candidate service. Product support is available to approved participants in the beta test program.",
-  "selected": false,
-  "tags": [
-    "elastic",
-    "elasticsearch",
-    "kibana",
-    "x-pack"
-  ],
-  "version": "1.0.14-5.5.0-beta"
-}
-</pre>
-This version is newer than we need.
-
-<pre>
-cat 4/package.json
-{
-  "description": "Elasticsearch 5, and optionally X-Pack",
-  "framework": true,
-  "maintainer": "support@mesosphere.io",
-  "minDcosReleaseVersion": "1.9",
-  "name": "beta-elastic",
-  "packagingVersion": "3.0",
-  "postInstallNotes": "DC/OS elastic service is being installed!\n\n\tDocumentation: https://docs.mesosphere.com/1.9/usage/service-guides/elastic\n\tIssues: https://docs.mesosphere.com/support/",
-  "postUninstallNotes": "DC/OS elastic service has been uninstalled.",
-  "preInstallNotes": "This DC/OS Service is currently a beta candidate undergoing testing as part of a formal beta test program. There may be bugs, incomplete features, incorrect documentation, or other discrepancies. Contact Mesosphere before deploying this beta candidate service. Product support is available to approved participants in the beta test program.",
-  "selected": false,
-  "tags": [
-    "elasticsearch",
-    "x-pack"
-  ],
-  "version": "1.0.13-5.4.1-beta"
-}
-</pre>
-
-This is the one we want; so delete folder 5.
-<pre>
-rm -rf 5
-</pre>
-
-To get beta-kafka 1.1.22-0.10.1.0-beta. I had to remove folders 2 and 1 from universe/repo/packages/B/beta-kafka.
-
-Now build the local-universe.
-
-<pre>
-sudo make DCOS_VERSION=1.9 local-universe
+sudo make DCOS_VERSION=1.9.2 DCOS_PACKAGE_INCLUDE="marathon-lb:1.8.0,beta-kafka:1.1.22-0.10.1.0-beta,beta-elastic:1.0.14-5.5.0-beta,dcos-enterprise-cli:1.0.8" local-universe
 </pre>
 
 Copy local-universe.tar.gz to the s3 folder
