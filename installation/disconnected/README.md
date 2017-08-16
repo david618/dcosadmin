@@ -85,7 +85,7 @@ sudo bash run_cluster_cmd.sh 1 3 1 'sudo yum install -y ipset unzip libtool-ltdl
 The master (m1) will also need java.
 
 <pre>
-sudo bash run_cluster_cmd.sh 1 0 0 'sudo yum -y install java-1.8.0-openjdk;
+sudo bash run_cluster_cmd.sh 1 0 0 'sudo yum -y install java-1.8.0-openjdk'
 </pre>
 
 
