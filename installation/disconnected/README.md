@@ -28,14 +28,11 @@ The testing outlined in below were done on Azure.
 
 The specfic command lines provided are intended as a guide; they will need to be tweaked for specific installation and testing.
 
-**NOTE**: Used [run_cluster_cmd.sh](../../scripts/run_cluster_cmd.sh) to facilitate running commands on all the agents.
-
 Moved the private key (named "azureuser")
 <pre>
 scp -i azureuser azureuser azureuser@djofflineboot:.
 ssh -i azureuser azureuser@djofflineboot
 </pre>
-
 
 ## Move Installers to Boot Server
 
@@ -57,7 +54,7 @@ Provided ID and Key
 aws s3 sync s3://djennings . 
 </pre>
 
-The items in s3
+Overview of items on s3://djennings
 - dcos/trinity installers 
 - dcos command line tool
 - docker-engine rpm
@@ -83,6 +80,15 @@ The following command will do the installs on 1 master (m1), 3 private agents (a
 <pre>
 sudo bash run_cluster_cmd.sh 1 3 1 'sudo yum install -y ipset unzip libtool-ltdl libseccomp policycoreutils-python'
 </pre>
+
+
+The master (m1) will also need java.
+
+<pre>
+sudo bash run_cluster_cmd.sh 1 0 0 'sudo yum -y install java-1.8.0-openjdk;
+</pre>
+
+
 
 ## Configure for Off Line Testing
 Modified NSG for agent, public agent, master; Outbound security rules
