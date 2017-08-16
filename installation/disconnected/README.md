@@ -97,6 +97,13 @@ Modified NSG for agent, public agent, master; Outbound security rules
 
 After these changes the nodes should be able to access services from each other; however, they cannot access the www
 
+## Format Data Drives (optional)
+If you have data drives format and mount them on /var/lib/mesos.
+
+You can use a script like "fmtdrvs.sh".  Run this command on each of the private agents.
+
+Otherwise DC/OS will use the root partition. 
+
 ## Run DCOS Installation Script
 
 Install Pre-reqs on Boot
