@@ -261,6 +261,5 @@ scp -i azureuser install_trinity_disconnected.sh m1:.
 scp -i azureuser dcos m1:.
 ssh -i azureuser m1
 
-sudo yum -y install java-1.8.0-openjdk
 sudo bash install_trinity_disconnected.sh
 </pre>
