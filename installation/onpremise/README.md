@@ -25,6 +25,8 @@ For example:
 192.168.0.151   p1.example.com p1
 </pre>
 - If you have an internal DNS; you can add these to the DNS server; otherwise, add these entries to /etc/hosts on each server
+- Be sure the DNS resolves and is resolvable from the network (e.g. DNS 192.168.0.1 and Gateway 192.168.0.1)
+
 
 # Start with OS Install
 - Download the DVD iso from [centos.org](https://www.centos.org/download/)
