@@ -5,6 +5,7 @@ These notes describe the Advanced install of Mesospohere DC/OS on premise. The c
 # Network 
 - Computers should be on same physical network.
 - The machines should be configured with Static IP.  
+
 **NOTE:** Don't use an IP in the DHCP servers scope. Most DHCP servers are not aware of static IP assignments and may assign the same IP to another machine; causing IP conflict.
 
 For example: 
