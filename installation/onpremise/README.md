@@ -28,6 +28,25 @@ For example:
 - Be sure the DNS resolves and is resolvable from the network (e.g. DNS 192.168.0.1 and Gateway 192.168.0.1)
 
 
+## Virtual Box Test
+
+Created Virutal Boxes on Three computers (t5810, xps8700, djennings)
+
+- t5810 (8 cpu; 32GB mem)
+  - boot (2 cpu; 4GB mem)
+  - m1 (4 cpu; 4GB mem)
+  - p1 (4 cpu; 4GB mem)
+  - a1,a2,a3 (4 cpu; 6GB mem)
+
+- xps8700 (8 cpu; 24GB mem)
+  - a4,a5,a6 (4 cpu; 7GB mem)
+
+- djennings (8 cpu, 16GB mem)
+  - a7,a8 (4cpu, 7GB mem)
+
+It is important to leave some mem for the base OS; otherwise the computer will become unresponsive. You can overload the cpu; but in reality you only have cpu's you have and they are shared by the Virutal Box VM's.
+
+
 ## Start with OS Install
 - Download the DVD iso from [centos.org](https://www.centos.org/download/)
 - Burn the iso image to DVD or [USB](https://wiki.centos.org/HowTos/InstallFromUSBkey)
@@ -178,7 +197,7 @@ DCOS is Ready
 </pre>
 
 ## Summary
-The install completed for my on premise servers and I was able to access the DC/OS dashboard. The Dasbboard showed all 9 of my nodes up and running.
+The install completed for my on premise servers and I was able to access the DC/OS dashboard. The Dasbboard showed all 9 of my nodes up and running.  
 
 
 
