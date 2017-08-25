@@ -2,7 +2,7 @@
 
 These notes describe the Advanced install of Mesospohere DC/OS on premise. The computers have access to Internet.  
 
-# Network 
+## Network 
 - Computers should be on same physical network.
 - The machines should be configured with Static IP.  
 
@@ -28,13 +28,13 @@ For example:
 - Be sure the DNS resolves and is resolvable from the network (e.g. DNS 192.168.0.1 and Gateway 192.168.0.1)
 
 
-# Start with OS Install
+## Start with OS Install
 - Download the DVD iso from [centos.org](https://www.centos.org/download/)
 - Burn the iso image to DVD or [USB](https://wiki.centos.org/HowTos/InstallFromUSBkey)
 - Use Minimal install 
 - Configure using standard partions instead of LVM; be sure to give root drive most of the disk space
 
-# Post Install Configuration
+## Post Install Configuration
 
 The following commands
 - Install bash-completion
@@ -58,6 +58,18 @@ You can configure neworking with commands like these.
 # nmcli connection modify enp0s8 connection.autoconnect true
 # hostnamectl set-hostname a1.example.com
 </pre>
+
+### Disable Other Network Cards
+My computers had another network card that I needed to disable.
+
+<pre>
+sudo su -
+nmcli connection modify enp0s3 connection.autoconnect false
+nmcli connection modify enp0s8 ipv4.dns 192.168.0.1
+nmcli connection modify enp0s8 ipv4.gateway 192.168.0.1
+reboot
+</pre>
+
 
 **NOTE:** Be sure to add entries to /etc/hosts if you don't have a DNS configured.
 
