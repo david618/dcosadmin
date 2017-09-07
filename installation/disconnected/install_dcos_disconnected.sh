@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#******************* SET THESE BEFORE RUNNING ***********************************
+#******************* SET THESE BEFORE RUNNING ****************************
 
 # Set the URL to DCOS config script
 DCOS_URL=dcos_generate_config.sh
@@ -24,6 +24,9 @@ ADMIN_PASSWORD=adminadmin
 DOCKER_ENGINE_SELINUX=docker-engine-selinux-1.13.1-1.el7.centos.noarch.rpm
 DOCKER_ENGINE=docker-engine-1.13.1-1.el7.centos.x86_64.rpm
 
+# NETWORK_DEVICE (For Azure and AWS eth0 worked)
+NETWORK_DEVICE=eth0
+
 # DCOS installs in /var/lib/mesos
 # For Active Agents consider adding a data drive and monting it to /var/lib/mesos
 # The drive should be formated as xfs with ftype=1 (e.g. mkfs -t xfs -n ftype=1 /dev/sdc1
@@ -34,43 +37,43 @@ DOCKER_ENGINE=docker-engine-1.13.1-1.el7.centos.x86_64.rpm
 # Private Agents: a1, a2, ...
 # Public Agents: p1, p2, ...
 
+# Set RESET to "YES" and run to RESET
+RESET=NO
 
-#******************* SET THESE BEFORE RUNNING ***********************************
-RESET=$1
+#************** SCRIPT BEGINS HERE *******************************
 
-case "$RESET" in
-        reset)
-                echo "reset"
-                rm -f *.log
-                rm -f overlay.conf
-                rm -f override.conf
-                rm -f install.sh
-                rm -rf genconf
-                rm -f dcos-genconf*.tar
-		CONTAINER=$(docker ps | grep nginx | cut -d ' ' -f 1)
-		docker stop $CONTAINER
-		docker rm $CONTAINER
-                echo "You might see an error message about docker; that's ok."
-                exit 0
-                ;;
-esac
+if [ "${RESET}" == "YES" ]; then
+    echo "resetting"
+    rm -f *.log
+    rm -f docker.repo
+    rm -f overlay.conf
+    rm -f override.conf
+    rm -f install.sh
+    rm -rf genconf
+    rm -f dcos-genconf*.tar
+    rm -f dcos_generate*.sh
+    CONTAINER=$(docker ps | grep nginx | cut -d ' ' -f 1)
+    docker stop $CONTAINER
+    docker rm $CONTAINER
+    echo "You might see an error message about docker; that's ok."
+    exit 0
+fi
 
 # Verify PKIFILE exists
 if [ ! -e $PKIFILE ]; then
-	echo "This PKI file does not exist: " + $PKIFILE
-	exit 3
+    echo "This PKI file does not exist: " + $PKIFILE
+    exit 3
 fi
 
 # Setup Boot Log File
 boot_log="boot.log"
-
 
 # Start Time
 echo "Start Boot Setup"
 echo "Boot Setup should take about 2 minutes. If it takes longer than 10 minutes then use Ctrl-C to exit this Script and review the log files (e.g. boot.log)"
 st=$(date +%s)
 
-# Crete genconf directory
+# Create genconf directory
 if [[ ! -e genconf ]]; then
    mkdir genconf
 fi
@@ -79,7 +82,7 @@ fi
 ip_detect="#!/usr/bin/env bash
 set -o nounset -o errexit
 export PATH=/usr/sbin:/usr/bin:$PATH
-echo \$(ip addr show eth0 | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | head -1)"
+echo \$(ip addr show ${NETWORK_DEVICE} | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | head -1)"
 
 echo "$ip_detect" > genconf/ip-detect
 
