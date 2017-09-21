@@ -108,7 +108,7 @@ Edit /etc/munin/munin.conf and set host tree
 
 ## Access the Munin Web Page
 
-For example:  http://51.183.30.201:81/munin
+For example:  http<span></span>://51.183.30.201:81/munin
 
 Where 51.183.30.201 is the boot servers public IP.
 
