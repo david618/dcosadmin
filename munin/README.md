@@ -114,5 +114,41 @@ Where 51.183.30.201 is the boot servers public IP.
 
 You'll be prompted for the username/password you created earlier.
 
+## Access Data Directly
 
+Munin doesn't currently provide a rest interface; however, it is possible to use rrdtool to export the data directly.
 
+<pre>
+cd /var/lib/munin
+xport -s now-1h -e now --json DEF:xx=a1-cpu-system-d.rrd:42:AVERAGE   XPORT:xx:"bytes"
+</pre>
+
+Will extract vaules from rrd file to json giving results like.
+
+<pre>
+{ about: 'RRDtool xport JSON output',
+  meta: {
+    "start": 1506014100,
+    "step": 300,
+    "end": 1506014100,
+    "legend": [
+      'bytes'
+          ]
+     },
+  "data": [
+    [ null ],
+    [ null ],
+    [ null ],
+    [ null ],
+    [ null ],
+    [ null ],
+    [ null ],
+    [ 4.4870370370e+00 ],
+    [ 4.5845000000e+00 ],
+    [ 4.6090000000e+00 ],
+    [ 4.6348333333e+00 ],
+    [ 4.6328333333e+00 ],
+    [ null  ]
+  ]
+}
+</pre>
