@@ -32,3 +32,11 @@ cpus_total_usage = (
                    )
 cpu_percent      = cpus_total_usage / cpu_limit * 100%
 </pre>
+
+## Tasks
+
+Task status; resources, container id, ip, 
+
+<pre>
+curl -s m1:5050/tasks
+</pre>
