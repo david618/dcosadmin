@@ -92,6 +92,46 @@ tar xvzf node_exporter-0.14.0.linux-amd64.tar.gz
 ./node_exporter-0.14.0.linux-amd64/node_exporter &
 </pre>
 
+## Install mesos_exporter
+
+Mesosphere provide [mesos_exporter](https://github.com/mesosphere/mesos_exporter) plugin for Prometheus.
+
+### Install Go 
+
+Download go from [golang](https://golang.org/dl/)
+
+You can use curl
+
+<pre>
+curl -OL https://storage.googleapis.com/golang/go1.9.linux-amd64.tar.gz
+
+shasum -a256 go1.9.linux-amd64.tar.gz 
+d70eadefce8e160638a9a6db97f7192d8463069ab33138893ad3bf31b0650a79  go1.9.linux-amd64.tar.gz
+
+sudo tar -C /usr/local -xvzf go1.9.linux-amd64.tar.gz 
+</pre>
+
+Setup Paths
+
+<pre>
+export PATH=$PATH:/usr/local/go/bin
+
+mkdir gomesos
+export GOBIN="$HOME/gomesos/bin"
+export GOPATH="$HOME/gomesos"
+
+go get github.com/mesosphere/mesos_exporter
+cp gomesos/bin/mesos_exporter genconf/serve/
+</pre>
+
+On Master and Agents
+
+<pre>
+curl -O boot/mesos_exporter
+chmod u+x mesos_exporter
+./mesos_exporter --master 172.17.1.11:5050
+./mesos_exporter --slave 172.17.2.9:5051
+
 ## Sample Queries
 
 Opened boot firewall for access to 9090..
