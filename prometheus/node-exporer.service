@@ -1,0 +1,12 @@
+Description=Node Explorer
+After=network.target
+
+[Service]
+Type=simple
+User=azureuser
+Group=azureuser
+
+ExecStart=/home/azureuser/node_exporter-0.14.0.linux-amd64/node_exporter
+
+[Install]
+WantedBy=multi-user.target
