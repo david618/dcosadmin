@@ -131,6 +131,7 @@ curl -O boot/mesos_exporter
 chmod u+x mesos_exporter
 ./mesos_exporter --master 172.17.1.11:5050
 ./mesos_exporter --slave 172.17.2.9:5051
+</pre>
 
 ## Sample Queries
 
@@ -143,3 +144,16 @@ Some examples
 - Total CPU usage: sum without(cpu,instance,job)(irate(node_cpu{mode!="idle"}[5m]))
 
 
+## Systemd Service
+Use could setup system service for [prometheus](prometheus.service) and for [node-exporter](node-exporter.service). 
+
+Additionally you could use mod_proxy to route calls from an Apache Web Server to prometheus. 
+
+<pre>
+ProxyPass /graph http://boot:9090/graph
+ProxyPassReverse /graph http://boot:9090/graph
+ProxyPass /static http://boot:9090/static
+ProxyPassReverse /static http://boot:9090/static
+ProxyPass /api http://boot:9090/api
+ProxyPassReverse /api http://boot:9090/api
+</pre>
