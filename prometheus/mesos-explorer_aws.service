@@ -1,0 +1,14 @@
+Description=Mesos Explorer
+After=network.target
+
+[Service]
+Type=simple
+User=centos
+Group=centos
+
+EnvironmentFile=/home/centos/mesos_exporter_env
+
+ExecStart=/bin/bash -c "/home/centos/mesos_exporter --${MESOS_TYPE} http://${MESOS_SERVER}:${MESOS_PORT}"
+
+[Install]
+WantedBy=multi-user.target
