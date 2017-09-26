@@ -157,3 +157,49 @@ ProxyPassReverse /static http://boot:9090/static
 ProxyPass /api http://boot:9090/api
 ProxyPassReverse /api http://boot:9090/api
 </pre>
+
+Tried to load the IP dynamically into service file. Used a script with ExecStartPre to preload the EnvrionmentFile.  Didn't work yet: 
+
+Create this script in /usr/loca/bin/ip-detect
+<pre>
+#!/bin/bash
+
+set -o nounset -o errexit
+echo $(ip addr show eth0 | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | head -1
+</pre>
+
+Run chmod to make it executable for all.
+
+Create mesos_exporter_create_env.sh.
+
+<pre>
+#!/bin/bash
+
+ENVFILE=/home/centos/mesos_exporter_env
+
+echo MESOS_SERVER=$(ip-detect) > ${ENVFILE}
+echo MESOS_PORT=5050 >> ${ENVFILE}
+</pre>
+
+Tried this service file
+
+<pre>
+Description=Mesos Explorer
+After=network.target
+
+[Service]
+Type=simple
+User=centos
+Group=centos
+
+EnvironmentFile=/home/centos/mesos_exporter_env
+ExecStartPre=/home/centos/mesos_exporter_create_env.sh
+
+ExecStart=/bin/bash -c "/home/centos/mesos_exporter --master http://${MESOS_SERVER}:${MESOS_PORT}"
+
+[Install]
+WantedBy=multi-user.target
+</pre>
+
+For now I just hard coded the IP, Port, and Type in a Environment variable.
+
