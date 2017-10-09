@@ -113,7 +113,7 @@ ExecStart=/opt/prometheus/node_exporter
 [Install]
 WantedBy=multi-user.target\"
 
-echo "\${node_exporter}\" > /etc/systemd/system/node_exporter.service
+echo \"\${node_exporter}\" > /etc/systemd/system/node_exporter.service
 
 mesos_exporter=\"Description=Mesos Explorer
 After=network.target
@@ -139,6 +139,9 @@ systemctl start mesos_exporter
 
 CMD="sudo curl -O boot/install_prometheus_exporters.sh;sudo bash install_prometheus_exporters.sh"
 
+PCF=/opt/prometheus/prometheus.yml
+
+
 OFFSET=0
 PREFIX="m"
 for (( i=1; i<=$NUM_MASTERS; i++))
@@ -146,6 +149,9 @@ do
         SERVER=${PREFIX}$(( $OFFSET + $i ))
         echo $SERVER
         ssh -t -t -o "StrictHostKeyChecking no" -i $PKIFILE $USERNAME@$SERVER "$CMD"
+        echo "  - job_name: \'${SERVER}\'" >> ${PCF}
+        echo "    static_configs:" >> ${PCF}
+	echo "      - targets: [\'${SERVER}:9105\',\'${SERVER}:9100\']" >> ${PCF}
 done
 
 PREFIX="a"
@@ -154,6 +160,9 @@ do
         SERVER=${PREFIX}$(( $OFFSET + $i ))
         echo $SERVER
         ssh -t -t -o "StrictHostKeyChecking no" -i $PKIFILE $USERNAME@$SERVER "$CMD"
+        echo "  - job_name: \'${SERVER}\'" >> ${PCF}
+        echo "    static_configs:" >> ${PCF}
+	echo "      - targets: [\'${SERVER}:9105\',\'${SERVER}:9100\']" >> ${PCF}
 done
 
 PREFIX="p"
@@ -162,6 +171,9 @@ do
         SERVER=${PREFIX}$(( $OFFSET + $i ))
         echo $SERVER
         ssh -t -t -o "StrictHostKeyChecking no" -i $PKIFILE $USERNAME@$SERVER "$CMD"
+        echo "  - job_name: \'${SERVER}\'" >> ${PCF}
+        echo "    static_configs:" >> ${PCF}
+	echo "      - targets: [\'${SERVER}:9105\',\'${SERVER}:9100\']" >> ${PCF}
 done
 
 
