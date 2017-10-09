@@ -149,7 +149,7 @@ Use could setup system service for [prometheus](prometheus.service) and for [nod
 
 Additionally you could use mod_proxy to route calls from an Apache Web Server to prometheus. 
 
-<pre
+<pre>
 ProxyRequests off
 ProxyPass /graph http://boot:9090/graph
 ProxyPassReverse /graph http://boot:9090/graph
