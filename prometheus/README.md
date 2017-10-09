@@ -101,3 +101,9 @@ These number were what I saw on disk
 
 We could modify the mesos_exporter to collect and report these numbers if needed.
 
+
+## Prometheusu API
+Promethesus provides libraries for instrumentalizing code. This would allow us to collect metrics (counts) from each worker node and turn that into rates using Promethesus functions.  
+
+I was able to create a sample client in Java.  
+
