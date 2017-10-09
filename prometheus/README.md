@@ -133,15 +133,28 @@ chmod u+x mesos_exporter
 ./mesos_exporter --slave 172.17.2.9:5051
 </pre>
 
-## Sample Queries
+## Example Prometheus Queries
+- Reference: https://prometheus.io/docs/querying/basics/
+- CPU Usage for Mesos Tasks
+  - Query: cpu_user_seconds_total
+  - From Console: You can see framework_id and id of tasks running on the nodes
 
-Opened boot firewall for access to 9090..
+- CPU Usage for Elastic (Seconds)
+  - Using framework_id="b1c5d0c3-61ff-4db7-9cb3-6f8033c242b6-0002" from previous step
+  - Query: cpu_user_seconds_total{framework_id="b1c5d0c3-61ff-4db7-9cb3-6f8033c242b6-0002"}
 
-http:<i></i>//52.183.30.1:9090.  Now you can query and graph results.
+- CPU Usage by Elastic (# CPU)
+  - Using irate function and average and 5 min intervals
+  - Query: irate(cpu_user_seconds_total{framework_id="b1c5d0c3-61ff-4db7-9cb3-6f8033c242b6-0002"}[5m])
+  - From Graph: You can stack or look at individual usage by id
+  - You can see over the weekend periods of usage near 12 cpu/data node
 
-Some examples
-- Disk Usage as Percentage: (1 - (node_filesystem_free{mountpoint="/var/lib/mesos"}/node_filesystem_size{mountpoint="/var/lib/mesos"}))*100
-- Total CPU usage: sum without(cpu,instance,job)(irate(node_cpu{mode!="idle"}[5m]))
+## Returning results as JSON from Promethesus
+- Reference: https://prometheus.io/docs/querying/api/
+- For example: http://18.221.127.35:9090/api/v1/query?query=irate(cpu_user_seconds_total{framework_id=%22b1c5d0c3-61ff-4db7-9cb3-6f8033c242b6-0002%22}[5m])
+  - Returns json similar to what you get in "Console"
+- For a range query: http://18.221.127.35:9090/api/v1/query_range?query=irate(cpu_user_seconds_total%7Bframework_id%3D%22b1c5d0c3-61ff-4db7-9cb3-6f8033c242b6-0002%22%7D%5B5m%5D)&start=1507561657.037&end=1507583257.037&step=86&_=1507582317773
+  - Returns json used to populate graph. 
 
 
 ## Systemd Service
