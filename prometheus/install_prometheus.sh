@@ -66,12 +66,14 @@ curl -O https://s3.us-east-2.amazonaws.com/djenningsrt/prometheus-1.7.1.linux-am
 tar xvzf mesos_exporter.tgz
 tar xvzf node_exporter-0.14.0.linux-amd64.tar.gz
 tar xvzf prometheus-1.7.1.linux-amd64.tar.gz
-cp node_exporter-0.14.0.linux-amd64/node_exporter genconf/serve/
-cp mesos_exporter genconf/serve/
 
 ln -s prometheus-1.7.1.linux-amd64 prometheus
 chown -R prometheus. prometheus-1.7.1.linux-amd64/
 chown -h prometheus. prometheus
+
+cd -
+cp /opt/prometheus/node_exporter-0.14.0.linux-amd64/node_exporter genconf/serve/
+cp /opt/prometheus/mesos_exporter genconf/serve/
 
 install_exporters="#!/bin/bash
 
@@ -125,7 +127,7 @@ Group=prometheus
 
 EnvironmentFile=/opt/prometheus/mesos_exporter_env
 ExecStart=
-ExecStart=/opt/prometheus/mesos_exporter --\${MESOS_TYPE} http://\${MESOS_SERVER}:\${MESOS_PORT}
+ExecStart=/opt/prometheus/mesos_exporter --\\\${MESOS_TYPE} http://\\\${MESOS_SERVER}:\\\${MESOS_PORT}
 
 [Install]
 WantedBy=multi-user.target\"
@@ -136,6 +138,8 @@ echo \"\${mesos_exporter}\" > /etc/systemd/system/mesos_exporter.service
 systemctl start node_exporter
 systemctl start mesos_exporter
 "
+
+echo "${install_exporters}" > genconf/serve/install_prometheus_exporters.sh
 
 CMD="sudo curl -O boot/install_prometheus_exporters.sh;sudo bash install_prometheus_exporters.sh"
 
