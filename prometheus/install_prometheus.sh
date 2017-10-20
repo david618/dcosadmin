@@ -102,7 +102,8 @@ echo \"\${mesos_exporter_env}\" > /opt/prometheus/mesos_exporter_env
 
 chown -R prometheus. /opt/prometheus
 
-node_exporter=\"Description=Node Explorer
+node_exporter=\"[Unit]
+Description=Node Explorer
 After=network.target
 
 [Service]
@@ -117,7 +118,8 @@ WantedBy=multi-user.target\"
 
 echo \"\${node_exporter}\" > /etc/systemd/system/node_exporter.service
 
-mesos_exporter=\"Description=Mesos Explorer
+mesos_exporter=\"[Unit]
+Description=Mesos Explorer
 After=network.target
 
 [Service]
@@ -181,3 +183,21 @@ do
 done
 
 
+prom_service="[Unit]
+Description=Prometheus
+After=network.target
+
+[Service]
+User=prometheus
+Group=prometheus
+Type=simple
+WorkingDirectory=/opt/prometheus/prometheus
+ExecStart=/opt/prometheus/prometheus/prometheus -config.file /opt/prometheus/prometheus/prometheus.yml
+
+[Install]
+WantedBy=multi-user.target"
+
+echo "${prom_service}" > /etc/systemct/system/prometheus.service
+
+systemctl enable prometheus.service
+systemctl start prometheus.service
