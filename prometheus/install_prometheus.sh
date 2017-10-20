@@ -143,7 +143,7 @@ echo "${install_exporters}" > genconf/serve/install_prometheus_exporters.sh
 
 CMD="sudo curl -O boot/install_prometheus_exporters.sh;sudo bash install_prometheus_exporters.sh"
 
-PCF=/opt/prometheus/prometheus.yml
+PCF=/opt/prometheus/prometheus/prometheus.yml
 
 
 OFFSET=0
@@ -153,9 +153,9 @@ do
         SERVER=${PREFIX}$(( $OFFSET + $i ))
         echo $SERVER
         ssh -t -t -o "StrictHostKeyChecking no" -i $PKIFILE $USERNAME@$SERVER "$CMD"
-        echo "  - job_name: \'${SERVER}\'" >> ${PCF}
+        echo "  - job_name: '${SERVER}'" >> ${PCF}
         echo "    static_configs:" >> ${PCF}
-	echo "      - targets: [\'${SERVER}:9105\',\'${SERVER}:9100\']" >> ${PCF}
+	echo "      - targets: ['${SERVER}:9105','${SERVER}:9100']" >> ${PCF}
 done
 
 PREFIX="a"
@@ -164,9 +164,9 @@ do
         SERVER=${PREFIX}$(( $OFFSET + $i ))
         echo $SERVER
         ssh -t -t -o "StrictHostKeyChecking no" -i $PKIFILE $USERNAME@$SERVER "$CMD"
-        echo "  - job_name: \'${SERVER}\'" >> ${PCF}
+        echo "  - job_name: '${SERVER}'" >> ${PCF}
         echo "    static_configs:" >> ${PCF}
-	echo "      - targets: [\'${SERVER}:9105\',\'${SERVER}:9100\']" >> ${PCF}
+	echo "      - targets: ['${SERVER}:9105','${SERVER}:9100']" >> ${PCF}
 done
 
 PREFIX="p"
@@ -175,9 +175,9 @@ do
         SERVER=${PREFIX}$(( $OFFSET + $i ))
         echo $SERVER
         ssh -t -t -o "StrictHostKeyChecking no" -i $PKIFILE $USERNAME@$SERVER "$CMD"
-        echo "  - job_name: \'${SERVER}\'" >> ${PCF}
+        echo "  - job_name: '${SERVER}'" >> ${PCF}
         echo "    static_configs:" >> ${PCF}
-	echo "      - targets: [\'${SERVER}:9105\',\'${SERVER}:9100\']" >> ${PCF}
+	echo "      - targets: ['${SERVER}:9105','${SERVER}:9100']" >> ${PCF}
 done
 
 
