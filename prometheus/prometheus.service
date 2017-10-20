@@ -1,19 +1,14 @@
+[Unit]
 Description=Prometheus
 After=network.target
 
 [Service]
-User=azureuser
-Group=azureuser
+User=prometheus
+Group=prometheus
 Type=simple
-
-WorkingDirectory=/home/azureuser/prometheus-1.7.1.linux-amd64
-LimitNOFILE=65536
-Environment='ALLOUT=/home/azureuser/prometheus-1.7.1.linux-amd64/prometheus.log'
-EnvironmentFile=-/etc/default/prometheus
-
-ExecStart=/bin/sh -c "exec /home/azureuser/prometheus-1.7.1.linux-amd64/prometheus -config.file //home/azureuser/prometheus-1.7.1.linux-amd64/prometheus.yml"
-KillMode=control-group
+WorkingDirectory=/opt/prometheus/prometheus
+ExecStart=/opt/prometheus/prometheus/prometheus -config.file /opt/prometheus/prometheus/prometheus.yml
 
 [Install]
 WantedBy=multi-user.target
-Alias=prometheus.service
+
