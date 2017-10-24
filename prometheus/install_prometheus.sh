@@ -197,7 +197,7 @@ ExecStart=/opt/prometheus/prometheus/prometheus -config.file /opt/prometheus/pro
 [Install]
 WantedBy=multi-user.target"
 
-echo "${prom_service}" > /etc/systemct/system/prometheus.service
+echo "${prom_service}" > /etc/systemd/system/prometheus.service
 
 systemctl enable prometheus.service
 systemctl start prometheus.service
