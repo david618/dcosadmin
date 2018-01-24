@@ -13,6 +13,15 @@ tar xvzf kafka_2.11-0.11.0.2.tgz
 ln -s kafka_2.11-0.11.0.2 kafka
 </pre>
 
+
+Configure for delete topic.
+
+Add this line to server.properties
+
+<pre>
+delete.topic.enable=true
+</pre>
+
 ## Create Gateway in Trinity
 
 Assuming you named the Gateway "gw01".
