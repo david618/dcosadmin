@@ -44,7 +44,7 @@ Created Virutal Boxes on Three computers (t5810, xps8700, djennings)
 - djennings (8 cpu, 16GB mem)
   - a7,a8 (4cpu, 7GB mem)
 
-It is important to leave some mem for the base OS; otherwise the computer will become unresponsive. You can overload the cpu; but in reality you only have cpu's you have and they are shared by the Virutal Box VM's.
+It is important to leave some mem for the base OS; otherwise the computer will become unresponsive. With multiple VM's you can allocate more virtual cpu's than the number of physcial cpu's (e.g. You have a 8 cpus and you create 4 VM's with 4 cpu's each). The physical cpu's are time shared between the VM's; therefore, at some point you will exhaust the computers physcial CPU's.
 
 
 ## Start with OS Install
