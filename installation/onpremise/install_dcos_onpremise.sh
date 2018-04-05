@@ -1,8 +1,19 @@
 #!/bin/bash
 
 
-NETWORK_DEVICE=enp0s8
+### Set Parameters before running ###
 
+## Network Device used to communicate between nodes
+NETWORK_DEVICE=eth0
+
+## For Community Edition ADMIN_PASSWORD to "" to disable security; Set ADMIN_PASSWORD for OAUTH 
+ADMIN_PASSWORD="gis12345"
+
+## Data Drive (Use 0 for no Data Drive; 1 for Data Drive).  
+## If Data Drive: First unformatted drive will be partitioned, formatted, and mounted to /var/lib/mesos. 
+DATA_DRIVE=1
+
+### End of Parameter ###
 
 if [ "$#" -ne 3 ];then
 	echo "Usage: $0 <numMasters> <numAgents> <numPublicAgents>"
@@ -65,7 +76,7 @@ fi
 DCOS_URL=https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh
 
 PS3='Which version of DCOS do you want to install: '
-options=("Latest Community Edition" "Version 1.9.1" "Version 1.9.0" "Custom")
+options=("Latest Community Edition" "Version 1.11.0" "Version 1.10.5" "Custom")
 select opt in "${options[@]}"
 do
     case $opt in
@@ -73,12 +84,12 @@ do
             DCOS_URL=https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh
             break
             ;;
-        "Version 1.9.1")
-            DCOS_URL=https://downloads.dcos.io/dcos/stable/1.9.1/dcos_generate_config.sh
+        "Version 1.11.0")
+            DCOS_URL=https://downloads.dcos.io/dcos/stable/1.11.0/dcos_generate_config.sh
             break
             ;;
-        "Version 1.9.0")
-            DCOS_URL=https://downloads.dcos.io/dcos/stable/commit/0ce03387884523f02624d3fb56c7fbe2e06e181b/dcos_generate_config.sh
+        "Version 1.10.5")
+            DCOS_URL=https://downloads.dcos.io/dcos/stable/1.10.5/dcos_generate_config.sh
             break
             ;;
         "Custom")
@@ -123,9 +134,6 @@ echo "Press Enter to Continue or Ctrl-C to abort"
 read OK
 
 
-# For Community Edition ADMIN_PASSWORD to "" to disable security; Set ADMIN_PASSWORD for OAUTH 
-ADMIN_PASSWORD=""
-
 # See if this is AWS
 boot_log="boot.log"
 
@@ -134,7 +142,7 @@ echo "Start Boot Setup"
 echo "Boot Setup should take about 5 minutes. If it takes longer than 10 minutes then use Ctrl-C to exit this Script and review the log files (e.g. boot.log)"
 st=$(date +%s)
 
-
+echo "Creating Config Files"
 # Create docker.repo
 docker_repo="[dockerrepo]
 name=Docker Repository
@@ -165,6 +173,8 @@ mkdir /etc/systemd/system/docker.service.d
 
 cp override.conf /etc/systemd/system/docker.service.d/
 
+echo "Installing Docker on Boot"
+
 yum install -y docker-engine > $boot_log 2>&1
 systemctl start docker >> $boot_log 2>&1
 systemctl enable docker >> $boot_log 2>&1
@@ -176,6 +186,9 @@ if [[ ! -e genconf ]]; then
     mkdir genconf
 fi
 
+
+echo "Creating Install Script"
+
 # Create ip-detect
 ip_detect="#!/usr/bin/env bash
 set -o nounset -o errexit
@@ -185,6 +198,60 @@ echo \$(ip addr show ${NETWORK_DEVICE} | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]
 echo "$ip_detect" > genconf/ip-detect
 
 bootip=$(bash ./genconf/ip-detect)
+
+
+format_data_drive=""
+if [[ "$DATA_DRIVE" -eq 1 ]]; then
+format_data_drive="yum -y install gdisk
+
+# Find the unpartition drive
+getunparteddisks() {
+        for disk in \$(lsblk -e 2 | grep disk | cut -d ' ' -f 1)
+        do
+                echo \${disk}     
+        done
+
+
+        blkid | while read -r line
+        do
+                part=\$(echo \${line} | cut -d ':' -f 1 | cut -d '/' -f 3)
+                echo \${part::-1}
+        done
+}
+
+datadrive=\$(getunparteddisks | sort | uniq -u)
+
+echo \"datadrive:\" \$datadrive
+
+mkdir /var/lib/mesos
+
+if [ \"\$1\" = \"slave\" ]; then
+
+        gdisk /dev/\${datadrive} << EOF
+n
+
+
+
+
+w
+Y
+EOF
+
+        mkfs -t xfs -n ftype=1 /dev/\${datadrive}1
+
+        blkid=\$(blkid | grep \${datadrive}1)
+
+        uuid=\$(echo \$blkid | awk -F'\"' '\$0=\$2')
+        echo \$blkid
+        echo \$uuid
+
+        fstabline=\"UUID=\${uuid} /var/lib/mesos    xfs   defaults   0  0\"
+
+        echo \$fstabline >> /etc/fstab
+
+        mount -a
+fi"
+fi
 
 os_config="curl -O $bootip/overlay.conf
 curl -O $bootip/override.conf
@@ -219,6 +286,8 @@ sysctl -w vm.max_map_count=262144"
 # Create install.bat
 install="#!/bin/bash
 
+$format_data_drive
+
 mkdir /tmp/dcos
 cd /tmp/dcos
 
@@ -230,9 +299,13 @@ bash dcos_install.sh \$1"
 
 echo "$install" > install.sh
 
+echo "Downloading DC/OS"
+
 curl -O --silent $DCOS_URL >> $boot_log 2>&1
 
 dcos_cmd=$(basename $DCOS_URL)
+
+echo "Run initial DC/OS command; Then create remaining config files"
 
 bash $dcos_cmd --help >> $boot_log 2>&1
 
@@ -283,6 +356,9 @@ $pwlines"
 
 echo "$config_yaml" > genconf/config.yaml
 
+
+echo "Run DC/OS Installer"
+
 # Run dcos_cmd
 bash $dcos_cmd >> $boot_log 2>&1
 
@@ -298,6 +374,8 @@ if [ $RESULT -ne 0 ]; then
 	echo "Move files to genconf/serve folder failed!. Check boot.log for more details"
 	exit 4
 fi 
+
+echo "Start nginx"
 
 docker run -d -p 80:80 -v $PWD/genconf/serve:/usr/share/nginx/html:ro nginx >> $boot_log 2>&1
 
