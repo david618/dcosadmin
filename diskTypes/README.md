@@ -38,3 +38,14 @@ For example
 - In DC/OS Dashboard 700GB was allocated. 
 
 
+## Summary
+
+The ROOT disk keeps the data on the same node as the service. For example an Elastic data node's data is on the same VM as the data node.
+
+The MOUNT disk may or may not be on the same node as the service. 
+- If data is on a different node performance could be impacted by network speeds.  
+- If the VM with the MOUNT disk or the VM running the service goes down the service is down. 
+
+For MOUNT drives to be effective they need to be attached to highly available and fault tolerant volumes.  
+
+
