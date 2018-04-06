@@ -28,7 +28,7 @@ For example:
 - Be sure the DNS resolves and is resolvable from the network (e.g. DNS 192.168.0.1 and Gateway 192.168.0.1)
 
 
-## Virtual Box Test
+## My Virtual Box Test Configuration
 
 Created Virutal Boxes on Three computers (t5810, xps8700, djennings)
 
@@ -52,35 +52,39 @@ It is important to leave some mem for the base OS; otherwise the computer will b
 - Burn the iso image to DVD or [USB](https://wiki.centos.org/HowTos/InstallFromUSBkey)
 - Use Minimal install 
 - Configure using standard partions instead of LVM; be sure to give root drive most of the disk space
+- Optionally add a second "Data" drive
 
 ## Post Install Configuration
 
 The following commands
 - Install bash-completion
-= Stop and disable firewall
+- Stop and disable firewall
 - Disable selinux
 - Modify sudoers to allow wheel group so sudo without password.
 
+As root
 <pre>
-# yum -y install bash-completion
-# systemctl stop firewalld.service
-# systemctl disable firewalld.service
-# sed -i s/=enforcing/=disabled/g /etc/selinux/config
-# sed -i -e 's/^%wheel/#%wheel/g' -e 's/^# %wheel/%wheel/g' /etc/sudoers
+yum -y install bash-completion
+systemctl stop firewalld.service
+systemctl disable firewalld.service
+sed -i s/=enforcing/=disabled/g /etc/selinux/config
+sed -i -e 's/^%wheel/#%wheel/g' -e 's/^# %wheel/%wheel/g' /etc/sudoers
 </pre>
 
 You can configure neworking with commands like these.
 
+As root
 <pre>
-# nmcli connection modify enp0s8 ipv4.addresses 192.168.56.141/24
-# nmcli connection modify enp0s8 ipv4.method manual
-# nmcli connection modify enp0s8 connection.autoconnect true
-# hostnamectl set-hostname a1.example.com
+nmcli connection modify enp0s8 ipv4.addresses 192.168.56.141/24
+nmcli connection modify enp0s8 ipv4.method manual
+nmcli connection modify enp0s8 connection.autoconnect true
+hostnamectl set-hostname a1.example.com
 </pre>
 
 ### Disable Other Network Cards
 My computers had another network card that I needed to disable.
 
+As root
 <pre>
 sudo su -
 nmcli connection modify enp0s3 connection.autoconnect false
@@ -102,11 +106,13 @@ Run the following command.  Change the path to the key (e.g. /home/david/centos.
 $ ssh-keygen
 </pre>
 
-You'll need to remove the password from the private key.
+Leave password blank.
+
+If you have a private key with a password remove the password.
 
 <pre>
-$ mv centos.pem centos.pem.withpassword
-$ openssl rsa -in centos.pem.withpassword -out centos.pem
+mv centos.pem centos.pem.withpassword
+openssl rsa -in centos.pem.withpassword -out centos.pem
 </pre>
 
 Now on each server run these commands as root to create the user and configure pki access.
@@ -121,7 +127,6 @@ cp centos.pem.pub /home/centos/.ssh/authorized_keys
 chown centos. /home/centos/.ssh/authorized_keys
 </pre>
 
-
 You should now be able to login to the servers with the pki key.
 
 <pre>
@@ -133,16 +138,16 @@ ssh -i centos.pem centos@m1
 Copy your private key to the boot server.
 
 <pre>
-$ scp -i centos.pem centos.pem centos@boot:~
+scp -i centos.pem centos.pem centos@boot:~
 </pre>
 
 Copy the [install_dcos_onpremise.sh](install_dcos_onpremise.sh) script to the boot server.
 
 <pre>
-$ scp -i centos.pem install_dcos_onpremise.sh centos@boot:~
+scp -i centos.pem install_dcos_onpremise.sh centos@boot:~
 </pre>
 
-SSH to the boot server. Open the install script. You may need to edit the NETWORK_DEVICE name.  This is the device that has the IP configured for DC/OS.  Can be found using ip command.
+SSH to the boot server. Edit the script. At the top you'll need to set some parameters.
 
 <pre>
 ip -r -o addr
