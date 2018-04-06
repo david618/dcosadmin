@@ -7,7 +7,7 @@
 NETWORK_DEVICE=eth0
 
 ## For Community Edition ADMIN_PASSWORD to "" to disable security; Set ADMIN_PASSWORD for OAUTH 
-ADMIN_PASSWORD="gis12345"
+ADMIN_PASSWORD="password"
 
 ## Data Drive (Use 0 for no Data Drive; 1 for Data Drive).  
 ## If Data Drive: First unformatted drive will be partitioned, formatted, and mounted to /var/lib/mesos. 
