@@ -1,6 +1,8 @@
 # On Premise Install
 
-These notes describe the Advanced install of Mesospohere DC/OS on premise. The computers have access to Internet.  
+These notes describe the Advanced install of Mesospohere DC/OS Comminity Edition on premise. 
+
+The on-premise computers must have access to Internet.  
 
 ## Network 
 - Computers should be on same physical network.
@@ -149,6 +151,7 @@ scp -i centos.pem install_dcos_onpremise.sh centos@boot:~
 
 SSH to the boot server. Edit the script. At the top you'll need to set some parameters.
 
+### NETWORK_DEVICE
 <pre>
 ip -r -o addr
 1: lo    inet 127.0.0.1/8 scope host lo\       valid_lft forever preferred_lft forever
@@ -164,7 +167,14 @@ ip -r -o addr
 
 The network device for this system is enp0s8.  
 
-Run the script.
+### ADMIN_PASSWORD
+You can leave this as "password". Any value will cause Oauth to be enabled. You can login with a valid Google, Microsoft, or Github account.  First login will be the administrator.
+
+### DATA_DRIVE
+If you created an extra Data Drive to be used for DC/OS then set DATA_DRIVE=1; otherwise; set DATA_DRIVE=0.
+
+
+### Run the script
 
 <pre>
 $ sudo bash install_dcos_onpremise.sh 1 8 1 
@@ -202,7 +212,7 @@ DCOS is Ready
 </pre>
 
 ## Summary
-The install completed for my on premise servers and I was able to access the DC/OS dashboard. The Dasbboard showed all 9 of my nodes up and running.  
+The Community Edition of DC/OS is installed and ready to be used.
 
 
 
