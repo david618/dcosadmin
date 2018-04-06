@@ -11,7 +11,7 @@ ADMIN_PASSWORD="password"
 
 ## Data Drive (Use 0 for no Data Drive; 1 for Data Drive).  
 ## If Data Drive: First unformatted drive will be partitioned, formatted, and mounted to /var/lib/mesos. 
-DATA_DRIVE=1
+DATA_DRIVE=0
 
 ### End of Parameter ###
 
