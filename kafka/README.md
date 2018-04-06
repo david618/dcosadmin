@@ -57,3 +57,8 @@ Topic:poll-satellites   PartitionCount:1        ReplicationFactor:1     Configs:
 ./kafka/bin/kafka-topics.sh --zookeeper m1:2181/dcos-service-hub-gw01 --delete --topic poll-satellites
 </pre>
 
+## Increase Partitions 
+
+<pre>
+./kafka/bin/kafka-topics.sh --zookeeper m1:2181/dcos-service-kafka --alter --topic planes --partitions 2
+</pre>
