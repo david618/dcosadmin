@@ -42,6 +42,13 @@ dcos package install edgelb-pool --cli
 dcos edgelb show --json a4iot > rcvRest-a4oit-config.json
 </pre>
 
+## Delete the Pool
+
+<pre>
+dcos edgelb delete a4iot
+</pre>
+
+
 ### Edit the Config
 
 This saved config didn't work when I tried to recreate the pool.  
@@ -49,6 +56,14 @@ This saved config didn't work when I tried to recreate the pool.
 Saved off just the contents of the "v2" object.  That portion works.
 
 
+## Create the Pool
 
+With the original Pool (Just Trinity)
+
+<pre>
+dcos edgelb create edge-lb-a4iot-pool.json 
+</pre>
+
+Or use your edited config.
 
 
