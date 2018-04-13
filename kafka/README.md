@@ -62,3 +62,10 @@ Topic:poll-satellites   PartitionCount:1        ReplicationFactor:1     Configs:
 <pre>
 ./kafka/bin/kafka-topics.sh --zookeeper m1:2181/dcos-service-kafka --alter --topic planes --partitions 2
 </pre>
+
+
+## Get Offset for Topic
+
+<pre>
+./kafka/bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list a2:9092 --topic planes-json-out
+</pre>
