@@ -67,3 +67,66 @@ dcos edgelb create edge-lb-a4iot-pool.json
 Or use your edited config.
 
 
+## Using the Rest API
+
+
+Additional details are on the [help](https://docs.mesosphere.com/services/edge-lb/) pages.
+
+### From Public DC/OS access point
+
+Accessing from the outside world.  `https://<public-name-or-ip/service/edgelb/`.  To access the api on this endpoint you'll need to supply a token.
+
+#### Get the Token 
+
+Send HTTP POST to `https://<public-name-or-ip/acs/api/v1/auth/login` with the uid and password as json.
+
+For example: `curl -XPOST -k -H "Content-Type: application/json" -d '{"uid":"trinity","password":"some-password"}' https://m1/acs/api/v1/auth/login`  
+
+This will return the token.  For example.
+
+```
+{
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1aWQiOiJ0cml  ...   DQwePKO9hYbg3b7p0WUzdRbHOA"
+}
+
+```
+
+### Use Rest API.
+
+For example:
+
+```
+curl -XGET -k -H "Content-Type: application/json" -H "Authorization: token=eyJ0eXAiOi...CGlk5q1lKviuqKp1g"  https://dj06dcos.westus2.cloudapp.azure.com/service/edgelb/v2/config
+```
+
+The token is also necessary if you try to access the master node directory `https://m1/...`
+
+### From Node on DC/OS cluster
+
+You can use the VIP from inside the cluster and bypass the need for authentication.
+
+```
+curl -XGET -k -H "Content-Type: application/json" api.edgelb.marathon.l4lb.thisdcos.directory/service/edgelb/v2/config
+```
+
+#### Get the Current Pool Config
+
+```
+curl -o a4iot.json api.edgelb.marathon.l4lb.thisdcos.directory/v2/pools/a4iot
+
+```
+
+#### Make changed 
+
+You can add/tweak the configuration as needed.
+
+
+#### Update the Pool Config
+
+```
+curl -XPUT -H 'Content-Type: application/json' -d @a4iot_pretty_websats.json api.edgelb.marathon.l4lb.thisdcos.directory/v2/pools/a4iot
+
+```
+
+This will load the modified config saved in a file named `a4iot_pretty_websats.json
+
