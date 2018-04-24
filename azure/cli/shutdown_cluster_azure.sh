@@ -1,32 +1,80 @@
 #!/bin/bash
 
-RG="dj06"
+# See if login token is valid
+az vm list > /dev/null 2>&1
+
+if [ $? -ne 0 ]; then
+  echo "You need to login to Azure"
+  echo "After successful authentication run $0 again"
+  # login
+  az login
+  exit 2
+fi
+
 ACTION="deallocate"
-NUM_MASTERS=1
-NUM_AGENTS=6
-NUM_AGENTS_PUBLIC=1
 
+# Use Azure Metadata to lookup Resource Group
+resourceGroup=$(curl -s -H Metadata:true http://169.254.169.254/metadata/instance?api-version=2017-08-01 | jq .compute.resourceGroupName --raw-output)
+
+if [ -z "${resourceGroup}" ]; then
+  echo "Couldn't find the Resource Group name using Azure Metadata"
+  exit 1
+fi
+
+echo "Stopping nodes on Cluster  ${resourceGroup}"
+echo "This process can take up to 15 minutes"
+
+totalNodes=0
+
+# Masters
 echo "Shutting Down Masters"
-for num in $(seq 1 ${NUM_MASTERS}); do
-  echo "az vm ${ACTION} --resource-group ${RG} --name ${RG}m${num}"
-  az vm ${ACTION} --resource-group ${RG} --name ${RG}m${num} > down_m${num}.log 2>&1
+count=1
+name=m1
+nameExists=$(getent hosts ${name})
+while [ ! -z "${nameExists}" ];do
+  echo "${ACTION} ${name}"
+  az vm ${ACTION} --resource-group ${resourceGroup} --name ${resourceGroup}${name} > down_${name}.log 2>&1 
+  count=$(( count + 1 ))
+  name="m${count}"
+  nameExists=$(getent hosts ${name})
+  totalNodes=$(( totalNodes + 1 ))
 done
 
+# Public Agents
 echo "Shutting Down Public Agents"
-for num in $(seq 1 ${NUM_AGENTS_PUBLIC}); do
-  echo "az vm ${ACTION} --resource-group ${RG} --name ${RG}p${num}"
-  az vm ${ACTION} --resource-group ${RG} --name ${RG}p${num} > down_p${num}.log 2>&1
+count=1
+name=p1
+nameExists=$(getent hosts ${name})
+while [ ! -z "${nameExists}" ];do
+  echo "${ACTION} ${name}"
+  az vm ${ACTION} --resource-group ${resourceGroup} --name ${resourceGroup}${name} > down_${name}.log 2>&1 
+  count=$(( count + 1 ))
+  name="p${count}"
+  nameExists=$(getent hosts ${name})
+  totalNodes=$(( totalNodes + 1 ))
 done
 
+
+# Private Agents
 echo "Shutting Down Private Agents"
-for num in $(seq 1 ${NUM_AGENTS}); do
-  echo "az vm ${ACTION} --resource-group ${RG} --name ${RG}a${num}"
-  az vm ${ACTION} --resource-group ${RG} --name ${RG}a${num} > down_a${num}.log 2>&1 &
+count=1
+name=a1
+nameExists=$(getent hosts ${name})
+while [ ! -z "${nameExists}" ];do
+  echo "${ACTION} ${name}"
+  az vm ${ACTION} --resource-group ${resourceGroup} --name ${resourceGroup}${name} > down_${name}.log 2>&1 &
+  count=$(( count + 1 ))
+  name="a${count}"
+  nameExists=$(getent hosts ${name})
+  totalNodes=$(( totalNodes + 1 ))
 done
 
+echo "Waiting for all Private Agents to Stop"
+cntSucceeded=$(cat down_a*.log 2>/dev/null | grep -e "Succeeded" | wc -l)
+while [ "$cntSucceeded" -lt "$totalNodes" ]; do
+	sleep 10
+	cntSucceeded=$(cat down_*.log | grep -e "Succeeded" | wc -l)
+	echo "$(date +%H:%M:%S) : ${cntSucceeded} of ${totalNodes} have stopped"
+done
 
-sleep 10
-echo "Watching logs with the following command:"
-echo "tail -f down_*.log | grep -e status -e down"
-echo "When you see all nodes with status succeeded; shutdown is conmplete. You can use Ctrl-C to exit watching at any time."
-tail -f down_*.log | grep -e status -e down
+echo "Cluster nodes are stopped/deallocated"
