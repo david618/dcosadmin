@@ -1,0 +1,311 @@
+{
+  "apiVersion": "V2",
+  "constraints": "hostname:UNIQUE",
+  "count": 1,
+  "cpus": 0.9,
+  "cpusAdminOverhead": 0.1,
+  "disk": 256,
+  "environmentVariables": {
+    "ELB_FILE_HAPROXY_CERT": "-----BEGIN CERTIFICATE-----\r\nMIID...-----END CERTIFICATE-----\r\n-----BEGIN RSA PRIVATE KEY-----\r\nMIIEp-----END RSA PRIVATE KEY-----\r\n"
+  },
+  "haproxy": {
+    "backends": [
+      {
+        "balance": "roundrobin",
+        "miscStrs": [
+          "timeout server 5m",
+          "timeout client 5m"
+        ],
+        "name": "taskmanager-https-backend",
+        "protocol": "HTTPS",
+        "rewriteHttp": {
+          "request": {
+            "forwardfor": true,
+            "rewritePath": true,
+            "setHostHeader": true,
+            "xForwardedPort": true,
+            "xForwardedProtoHttpsIfTls": true
+          },
+          "response": {
+            "rewriteLocation": true
+          }
+        },
+        "services": [
+          {
+            "endpoint": {
+              "check": {
+                "enabled": true
+              },
+              "port": -1,
+              "portName": "playapp-https",
+              "type": "AUTO_IP"
+            },
+            "marathon": {
+              "serviceID": "/trinity/taskmanager"
+            },
+            "mesos": {}
+          }
+        ]
+      },
+      {
+        "balance": "roundrobin",
+        "miscStrs": [
+          "timeout server 5m",
+          "timeout client 5m"
+        ],
+        "name": "taskmanager-http-backend",
+        "protocol": "HTTP",
+        "rewriteHttp": {
+          "request": {
+            "forwardfor": true,
+            "rewritePath": true,
+            "setHostHeader": true,
+            "xForwardedPort": true,
+            "xForwardedProtoHttpsIfTls": true
+          },
+          "response": {
+            "rewriteLocation": true
+          }
+        },
+        "services": [
+          {
+            "endpoint": {
+              "check": {
+                "enabled": true
+              },
+              "port": -1,
+              "portName": "playapp-http",
+              "type": "AUTO_IP"
+            },
+            "marathon": {
+              "serviceID": "/trinity/taskmanager"
+            },
+            "mesos": {}
+          }
+        ]
+      },
+      {
+        "balance": "roundrobin",
+        "miscStrs": [
+          "http-request add-header Trinity-AppId 8bf7f12e-405c-4550-bd34-572c8e2e3968"
+        ],
+        "name": "receiver-8bf7f12e-405c-4550-bd34-572c8e2e3968",
+        "protocol": "HTTP",
+        "rewriteHttp": {
+          "path": {
+            "fromPath": "/8bf7f12e-405c-4550-bd34-572c8e2e3968/",
+            "toPath": "/"
+          },
+          "request": {
+            "forwardfor": true,
+            "rewritePath": true,
+            "setHostHeader": true,
+            "xForwardedPort": true,
+            "xForwardedProtoHttpsIfTls": true
+          },
+          "response": {
+            "rewriteLocation": true
+          }
+        },
+        "services": [
+          {
+            "endpoint": {
+              "check": {
+                "enabled": true
+              },
+              "port": -1,
+              "portName": "httpport",
+              "type": "AUTO_IP"
+            },
+            "marathon": {
+              "serviceID": "/sits/rcv-csv-rest-planes"
+            },
+            "mesos": {}
+          }
+        ]
+      },
+      {
+        "balance": "roundrobin",
+        "miscStrs": [
+          "http-request add-header Trinity-AppId 067c5d55-7cb7-4592-8a7d-e1dec5eafc5c",
+          "timeout server 5m",
+          "timeout client 5m"
+        ],
+        "name": "mat-http-067c5d55-7cb7-4592-8a7d-e1dec5eafc5c",
+        "protocol": "HTTP",
+        "rewriteHttp": {
+          "path": {
+            "fromPath": "/067c5d55-7cb7-4592-8a7d-e1dec5eafc5c/",
+            "toPath": "/"
+          },
+          "request": {
+            "forwardfor": true,
+            "rewritePath": true,
+            "setHostHeader": true,
+            "xForwardedPort": true,
+            "xForwardedProtoHttpsIfTls": true
+          },
+          "response": {
+            "rewriteLocation": true
+          }
+        },
+        "services": [
+          {
+            "endpoint": {
+              "check": {
+                "enabled": true
+              },
+              "port": -1,
+              "portName": "httpport",
+              "type": "AUTO_IP"
+            },
+            "marathon": {
+              "serviceID": "/mats/ds01"
+            },
+            "mesos": {}
+          }
+        ]
+      },
+      {
+        "balance": "roundrobin",
+        "miscStrs": [
+          "http-request add-header Trinity-AppId 067c5d55-7cb7-4592-8a7d-e1dec5eafc5c",
+          "timeout server 5m",
+          "timeout client 5m"
+        ],
+        "name": "mat-https-067c5d55-7cb7-4592-8a7d-e1dec5eafc5c",
+        "protocol": "HTTPS",
+        "rewriteHttp": {
+          "path": {
+            "fromPath": "/067c5d55-7cb7-4592-8a7d-e1dec5eafc5c/",
+            "toPath": "/"
+          },
+          "request": {
+            "forwardfor": true,
+            "rewritePath": true,
+            "setHostHeader": true,
+            "xForwardedPort": true,
+            "xForwardedProtoHttpsIfTls": true
+          },
+          "response": {
+            "rewriteLocation": true
+          }
+        },
+        "services": [
+          {
+            "endpoint": {
+              "check": {
+                "enabled": true
+              },
+              "port": -1,
+              "portName": "httpsport",
+              "type": "AUTO_IP"
+            },
+            "marathon": {
+              "serviceID": "/mats/ds01"
+            },
+            "mesos": {}
+          }
+        ]
+      },
+      {
+        "name": "websats-backend",
+        "protocol": "HTTP",
+        "services": [
+          {
+            "endpoint": {
+              "type": "ADDRESS",
+              "address": "websats.marathon.l4lb.thisdcos.directory",
+              "port": 80
+            }
+          }
+        ]
+      }
+    ],
+    "frontends": [
+      {
+        "bindAddress": "0.0.0.0",
+        "bindPort": 80,
+        "certificates": [],
+        "linkBackend": {
+          "defaultBackend": "taskmanager-http-backend",
+          "map": [
+            {
+              "backend": "mat-http-067c5d55-7cb7-4592-8a7d-e1dec5eafc5c",
+              "pathBeg": "/067c5d55-7cb7-4592-8a7d-e1dec5eafc5c"
+            },
+            {
+              "backend": "receiver-8bf7f12e-405c-4550-bd34-572c8e2e3968",
+              "pathBeg": "/8bf7f12e-405c-4550-bd34-572c8e2e3968"
+            },
+            {
+              "backend": "websats-backend",
+              "pathBeg": "/websats"
+            }
+          ]
+        },
+        "miscStrs": [],
+        "protocol": "HTTP",
+        "redirectToHttps": {
+          "except": [
+            {
+              "pathBeg": "/favicon.ico"
+            },
+            {
+              "pathBeg": "/8bf7f12e-405c-4550-bd34-572c8e2e3968"
+            },
+            {
+              "pathBeg": "/067c5d55-7cb7-4592-8a7d-e1dec5eafc5c/arcgis/rest"
+            },
+            {
+              "pathBeg": "/067c5d55-7cb7-4592-8a7d-e1dec5eafc5c/assets"
+            },
+	    {
+              "pathBeg": "/websats"
+	    }
+          ]
+        }
+      },
+      {
+        "bindAddress": "0.0.0.0",
+        "bindPort": 443,
+        "certificates": [
+          "$ENVFILE/ELB_FILE_HAPROXY_CERT"
+        ],
+        "linkBackend": {
+          "defaultBackend": "taskmanager-https-backend",
+          "map": [
+            {
+              "backend": "mat-https-067c5d55-7cb7-4592-8a7d-e1dec5eafc5c",
+              "pathBeg": "/067c5d55-7cb7-4592-8a7d-e1dec5eafc5c"
+            },
+            {
+              "backend": "receiver-8bf7f12e-405c-4550-bd34-572c8e2e3968",
+              "pathBeg": "/8bf7f12e-405c-4550-bd34-572c8e2e3968"
+            },
+            {
+              "backend": "websats-backend",
+              "pathBeg": "/websats"
+            }
+          ]
+        },
+        "miscStrs": [],
+        "protocol": "HTTPS"
+      }
+    ],
+    "stats": {
+      "bindAddress": "0.0.0.0",
+      "bindPort": 9090
+    }
+  },
+  "mem": 992,
+  "memAdminOverhead": 32,
+  "name": "a4iot",
+  "namespace": "dcos-edgelb/pools",
+  "packageName": "edgelb-pool",
+  "packageVersion": "stub-universe",
+  "ports": [],
+  "role": "slave_public",
+  "secrets": [],
+  "virtualNetworks": []
+}
