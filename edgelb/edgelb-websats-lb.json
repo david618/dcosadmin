@@ -1,0 +1,28 @@
+{
+  "apiVersion": "V2",
+  "name": "websats-lb",
+  "count": 1,
+  "haproxy": {
+    "stats": {
+      "bindPort": 10009
+    },
+    "frontends": [{
+      "bindPort": 10002,
+      "protocol": "HTTP",
+      "linkBackend": {
+        "defaultBackend": "websats-backend"
+      }
+    }],
+    "backends": [{
+      "name": "websats-backend",
+      "protocol": "HTTP",
+      "services": [{
+        "endpoint": {
+          "type": "ADDRESS",
+          "address": "websats.marathon.l4lb.thisdcos.directory",
+          "port": 80
+        }
+      }]
+    }]
+  }
+}
