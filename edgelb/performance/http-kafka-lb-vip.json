@@ -1,0 +1,29 @@
+{
+  "apiVersion": "V2",
+  "name": "http-kafka-lb",
+  "count": 1,
+  "haproxy": {
+    "stats": {
+      "bindPort": 10009
+    },
+    "frontends": [{
+      "bindPort": 10001,
+      "protocol": "TCP",
+      "linkBackend": {
+        "defaultBackend": "http-kafka-backend"
+      }
+    }],
+    "backends": [{
+      "name": "http-kafka-backend",
+      "protocol": "TCP",
+      "services": [{
+        "marathon": {
+          "serviceID": "/http-kafka"
+        },
+        "endpoint": {
+          "portName": "web"
+        }
+      }]
+    }]
+  }
+}
