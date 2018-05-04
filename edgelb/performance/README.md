@@ -67,6 +67,15 @@ The haproxy stats for this pool are on port 10009 (e.g. `http://dj50.westus2.clo
 Added to /etc/haproxy/haproxy.cfg
 
 ```
+global
+   log /dev/log local0
+   log /dev/log local1 notice
+   chroot /var/lib/haproxy
+   stats timeout 30s
+   user haproxy
+   group haproxy
+   daemon
+
 defaults
    log global
    mode http
