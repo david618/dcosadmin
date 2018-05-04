@@ -62,7 +62,51 @@ Deployed the pull using "dcos" command line tool.   For example: `dcos edgelb cr
 The haproxy stats for this pool are on port 10009 (e.g. `http://dj50.westus2.cloudapp.azure.com:10009/haproxy?stats`)
 
 
-## HAProxy Configuration
+## HAProxy 
+
+### Install
+
+
+### Configure
+
+```
+curl -O http://www.haproxy.org/download/1.8/src/haproxy-1.8.8.tar.gz
+
+tar xvzf haproxy-1.8.8.tar.gz
+
+sudo yum install gcc pcre-static pcre-devel -y
+
+cd haproxy-1.8.8/
+
+
+make TARGET=linux2628
+
+
+sudo make install
+
+
+
+sudo mkdir -p /etc/haproxy
+sudo mkdir -p /var/lib/haproxy 
+sudo touch /var/lib/haproxy/stats
+
+sudo ln -s /usr/local/sbin/haproxy /usr/sbin/haproxy
+
+
+sudo cp ~/haproxy-1.8.8/examples/haproxy.init /etc/init.d/haproxy
+sudo chmod 755 /etc/init.d/haproxy
+sudo systemctl daemon-reload
+
+
+
+sudo chkconfig haproxy on
+
+sudo useradd -r haproxy
+
+sudo systemctl start haproxy
+sudo systemctl status haproxy
+```
+
 
 Added to /etc/haproxy/haproxy.cfg
 
@@ -101,6 +145,17 @@ The haproxy stats for this install of haproxy is on port 10003 (e.g. `http://dj5
 
 
 ## Test Results
+
+### Send Test Event
+
+```
+curl -v -XPOST http://p1:10001 -d'0,1512096618447,240.25,6419.93,-70.72,1,"Mielec Airport","Frank Pais International Airport",-1,-12.63768,52.54356'
+
+./kafka/bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic planes2
+
+curl -v -XPOST http://p1:10001 -d'0,1512096618447,240.25,6419.93,-70.72,1,"Mielec Airport","Frank Pais International Airport",-1,-12.63768,52.54356'
+```
+
 
 ### Configuration
 
