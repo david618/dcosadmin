@@ -144,3 +144,36 @@ Observations
 - Direct access is about two times faster than via HAProxy or EdgeLB
 - HAProxy is about 15% faster than EdgeLB
 
+
+## Adding nbproc to HAProxy config
+
+In the haproxy.cfg file add
+
+```
+global
+    nbproc 4
+    cpu-map 1 0
+    cpu-map 2 1
+    cpu-map 3 2
+    cpu-map 4 3
+```
+
+Output Rate: 9,923/s
+
+```
+global
+    nbproc 4
+    cpu-map 1 0
+    cpu-map 2 1
+    cpu-map 3 2
+    cpu-map 4 3
+    cpu-map 5 4
+    cpu-map 6 5
+    cpu-map 7 6    
+    cpu-map 8 7
+    
+```
+
+Output Rate: 9,784/s
+
+
