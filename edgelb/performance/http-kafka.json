@@ -1,0 +1,62 @@
+{
+  "id": "/http-kafka",
+  "cmd": "$MESOS_SANDBOX/jre1.8.0_144/bin/java -cp $MESOS_SANDBOX/rt.jar  org.jennings.rt.source.http.HttpKafka $PORT0 p1:9092 planes2 $PORT1",
+  "cpus": 1,
+  "mem": 2000,
+  "disk": 0,
+  "instances": 1,
+  "container": {
+    "type": "MESOS",
+    "volumes": []
+  },
+  "healthChecks": [
+    {
+      "gracePeriodSeconds": 300,
+      "intervalSeconds": 60,
+      "maxConsecutiveFailures": 3,
+      "path": "/",
+      "portIndex": 1,
+      "protocol": "MESOS_HTTP",
+      "timeoutSeconds": 20,
+      "delaySeconds": 15
+    }
+  ],
+  "labels": {
+    "HAPROXY_GROUP": "external"
+  },
+  "portDefinitions": [
+    {
+      "port": 10104,
+      "labels": {
+        "VIP_0": "/http-kafka:7000"
+      },
+      "name": "web",
+      "protocol": "tcp"
+    },
+    {
+      "port": 10105,
+      "name": "health",
+      "protocol": "tcp"
+    }
+  ],
+  "fetch": [
+    {
+      "uri": "https://s3.us-east-2.amazonaws.com/djenningsrt/jre-8u144-linux-x64.tar.gz",
+      "extract": true,
+      "executable": false,
+      "cache": false
+    },
+    {
+      "uri": "https://s3.us-east-2.amazonaws.com/djenningsrt/rt-lib.tgz",
+      "extract": true,
+      "executable": false,
+      "cache": false
+    },
+    {
+      "uri": "https://s3.us-east-2.amazonaws.com/djenningsrt/rt.jar",
+      "extract": true,
+      "executable": false,
+      "cache": false
+    }
+  ]
+}
