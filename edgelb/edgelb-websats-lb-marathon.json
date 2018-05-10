@@ -1,0 +1,29 @@
+{
+  "apiVersion": "V2",
+  "name": "websats-lb",
+  "count": 1,
+  "haproxy": {
+    "stats": {
+      "bindPort": 10008
+    },
+    "frontends": [{
+      "bindPort": 10002,
+      "protocol": "TCP",
+      "linkBackend": {
+        "defaultBackend": "websats-backend"
+      }
+    }],
+    "backends": [{
+      "name": "websats-backend",
+      "protocol": "TCP",
+      "services": [{
+        "marathon": {
+          "serviceID": "/websats"
+        },
+        "endpoint": {
+          "portName": "tomcat"
+        }
+      }]
+    }]
+  }
+}
